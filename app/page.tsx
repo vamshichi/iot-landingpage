@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="overflow-hidden bg-background">
+      <main className="overflow-hidden">
         <HeroSection />
         <AboutSection />
         <AgendaSection />
