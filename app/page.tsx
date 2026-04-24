@@ -8,6 +8,12 @@ import { SponsorsSection } from '@/components/SponsorsSection';
 import { PartnerSection } from '@/components/PartnerSection';
 import { ContactSection } from '@/components/ContactSection';
 import { Footer } from '@/components/Footer';
+import WhySection from '@/components/WhySection';
+import { WhySummitSection } from '@/components/WhySummitSection';
+import { MarketOpportunitySection } from '@/components/MarketOpportunitySection';
+import { SessionHighlightsSection } from '@/components/SessionHighlightsSection';
+import { WhoShouldAttendSection } from '@/components/WhoShouldAttendSection';
+import { SponsorsOverviewSection } from '@/components/SponsorsOverviewSection';
 
 export default function Home() {
   return (
@@ -15,11 +21,17 @@ export default function Home() {
       <Navbar />
       <main className="overflow-hidden">
         <HeroSection />
+        <WhySection />
         <AboutSection />
+        <WhySummitSection />
+         <SponsorsSection />
+         <MarketOpportunitySection />
         <AgendaSection />
+        <SessionHighlightsSection />
         <SpeakersSection />
         <IndustriesSection />
-        <SponsorsSection />
+        <WhoShouldAttendSection />
+        <SponsorsOverviewSection />
         <PartnerSection />
         <ContactSection />
       </main>

@@ -1,48 +1,68 @@
 'use client';
 
 import React from 'react';
-import { Shield, Zap, Globe, Lock } from 'lucide-react';
+import { ShieldCheck, Building2, Cpu } from 'lucide-react';
 
 export function AboutSection() {
   const highlights = [
     {
-      icon: Shield,
-      title: 'Enterprise Security',
-      description: 'Discover critical strategies for protecting IoT infrastructure at enterprise scale'
+      icon: ShieldCheck,
+      title: 'Government Mandates',
+      description: 'Governments define cybersecurity mandates shaping national digital infrastructure'
     },
     {
-      icon: Zap,
-      title: 'Innovation Hub',
-      description: 'Explore cutting-edge technologies and next-generation security solutions'
+      icon: Building2,
+      title: 'Enterprise Challenges',
+      description: 'Enterprises solve mission-critical vulnerabilities across connected systems'
     },
     {
-      icon: Globe,
-      title: 'Global Network',
-      description: 'Connect with 3000+ industry leaders, vendors, and government officials'
-    },
-    {
-      icon: Lock,
-      title: 'Government Focus',
-      description: 'Strategic sessions on critical infrastructure protection and compliance'
+      icon: Cpu,
+      title: 'Technology Solutions',
+      description: 'Technology leaders deliver real-world, scalable cybersecurity solutions'
     },
   ];
 
   return (
-    <section id="about" className="py-20 bg-gradient-to-b from-background via-purple-500/5 to-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      id="about"
+      className="py-24 bg-gradient-to-b from-background via-purple-500/5 to-background"
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Why Attend <span className="glow-text-cyan">IoT Summit?</span>
+          <p className="text-cyan-400 font-semibold tracking-widest uppercase mb-4">
+            About the Summit
+          </p>
+
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            The UAE’s Most Critical Cybersecurity Gathering <br />
+            for <span className="glow-text-cyan">Connected Infrastructure</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            The IoT Security World Summit is the premier conference bringing together governments, enterprises, 
-            and technology leaders to shape the secure IoT ecosystem for the Middle East and beyond.
+
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            The United Arab Emirates is leading the global transformation of smart cities, 
+            digital government, and connected infrastructure, making IoT security a national priority, not an option.
           </p>
         </div>
 
-        {/* Highlights Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        {/* Investment Highlight */}
+        <div className="glass-dark rounded-xl p-8 border border-cyan-500/30 mb-16 text-center">
+          <p className="text-lg text-muted-foreground">
+            With investments projected to reach
+          </p>
+
+          <h3 className="text-3xl md:text-4xl font-bold text-cyan-400 my-3">
+            USD 24.6 Billion by 2031
+          </h3>
+
+          <p className="text-muted-foreground">
+            this summit is where:
+          </p>
+        </div>
+
+        {/* Highlights */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {highlights.map((item, i) => {
             const Icon = item.icon;
             return (
@@ -53,31 +73,19 @@ export function AboutSection() {
                 <div className="mb-4 p-3 w-fit rounded-lg bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-all">
                   <Icon size={24} className="text-cyan-400" />
                 </div>
-                <h3 className="font-bold text-lg mb-2 text-foreground">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
+
+                <h3 className="font-bold text-lg mb-2 text-foreground">
+                  {item.title}
+                </h3>
+
+                <p className="text-sm text-muted-foreground">
+                  {item.description}
+                </p>
               </div>
             );
           })}
         </div>
 
-        {/* Key Markets */}
-        <div className="glass-dark rounded-xl p-8 border border-cyan-500/30">
-          <h3 className="text-2xl font-bold mb-6 text-center">Focused on Critical Verticals</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
-            {[
-              'Smart Cities',
-              'Critical Infrastructure',
-              'Healthcare IoT',
-              'Manufacturing',
-              'Energy & Utilities',
-              'Government',
-            ].map((industry, i) => (
-              <div key={i} className="py-4 px-2 rounded-lg bg-background/50 border border-cyan-500/20 hover:border-cyan-500/50 transition-all">
-                <p className="text-sm font-semibold text-cyan-400">{industry}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
