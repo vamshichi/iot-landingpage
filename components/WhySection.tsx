@@ -1,86 +1,90 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Shield, Globe, Briefcase, TrendingUp } from "lucide-react";
 
 const points = [
-  "Government-led, policy-driven ecosystem",
-  "Multi-billion-dollar market access",
-  "Real buyers. Real problems. Real solutions",
-  "Built for impact, influence & deal-making",
+  {
+    icon: Shield,
+    title: "Government-led, policy-driven ecosystem",
+  },
+  {
+    icon: TrendingUp,
+    title: "Multi-billion-dollar market access",
+  },
+  {
+    icon: Briefcase,
+    title: "Real buyers. Real problems. Real solutions",
+  },
+  {
+    icon: Globe,
+    title: "Built for impact, influence & deal-making",
+  },
 ];
 
-export default function WhySection() {
+export default function WhyEventMatters() {
   return (
-    <section className="relative bg-[#020817] text-white py-20 md:py-28 border-t border-white/10">
+    <section className="relative bg-[#0A0F1C] py-20 lg:py-28 overflow-hidden">
       
-      <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      {/* Background Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full" />
 
-        {/* LEFT CONTENT */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
-        >
-          <p className="text-cyan-400 text-sm tracking-widest uppercase mb-4">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+        
+        {/* Heading */}
+        <div className="text-center max-w-3xl mx-auto">
+          <p className="text-cyan-400 font-medium tracking-wide uppercase text-sm">
             Why This Event Matters
           </p>
 
-          <h2 className="text-3xl md:text-5xl font-bold leading-tight">
+          <h2 className="mt-4 text-3xl md:text-5xl font-bold text-white leading-tight">
             Where Global IoT Security Leaders Converge
           </h2>
 
-          <p className="text-gray-400 mt-6 text-base leading-relaxed max-w-md">
-            A high-impact platform designed for governments, enterprises, and
-            innovators to collaborate, solve real challenges, and unlock
-            large-scale opportunities.
+          <p className="mt-6 text-gray-400 text-base md:text-lg leading-relaxed">
+            A high-impact platform designed for governments, enterprises, and innovators 
+            to collaborate, solve real challenges, and unlock large-scale opportunities.
           </p>
-        </motion.div>
+        </div>
 
-        {/* RIGHT CONTENT */}
-        <div className="space-y-6">
+        {/* Points Grid */}
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {points.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={index}
+                className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-cyan-400/40 transition duration-300"
+              >
+                <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-cyan-500/10 mb-4">
+                  <Icon className="text-cyan-400" size={24} />
+                </div>
 
-          {points.map((point, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.15, duration: 0.6 }}
-              viewport={{ once: true }}
-              className="flex items-start gap-4"
-            >
-              {/* Dot */}
-              <div className="mt-2 w-2 h-2 rounded-full bg-cyan-400" />
+                <p className="text-white font-medium leading-relaxed">
+                  {item.title}
+                </p>
+              </div>
+            );
+          })}
+        </div>
 
-              {/* Text */}
-              <p className="text-gray-300 text-base leading-relaxed">
-                {point}
-              </p>
-            </motion.div>
-          ))}
+        {/* CTA Buttons */}
+        <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4">
+          
+          <Button className="bg-cyan-500 hover:bg-cyan-600 text-white px-6 py-3 rounded-xl shadow-lg shadow-cyan-500/30">
+            Register as Delegate
+          </Button>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            viewport={{ once: true }}
-            className="pt-6 flex flex-col sm:flex-row gap-4"
-          >
-            <button className="px-6 py-3 rounded-full bg-cyan-500 text-black font-semibold hover:bg-cyan-400 transition">
-              Register as Delegate
-            </button>
+          <Button className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl border border-white/20">
+            Become a Sponsor
+          </Button>
 
-            <button className="px-6 py-3 rounded-full border border-white/30 hover:bg-white hover:text-black transition">
-              Become a Sponsor
-            </button>
-
-            <button className="px-6 py-3 rounded-full border border-white/20 text-gray-300 hover:text-white hover:border-white transition">
-              Download Brochure
-            </button>
-          </motion.div>
+          <Button className="bg-transparent border border-cyan-400 text-cyan-400 hover:bg-cyan-400/10 px-6 py-3 rounded-xl">
+            Download Brochure
+          </Button>
 
         </div>
+
       </div>
     </section>
   );

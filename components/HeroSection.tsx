@@ -1,85 +1,96 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
-const SLIDES = [
-  "/images/traffic.png",
+const slides = [
   "/images/oil-gas.png",
+  "/images/traffic.png",
   "/images/manufacturing.png",
 ];
 
-export function HeroSection() {
-  const [index, setIndex] = useState(0);
+export default function HeroSection() {
+  const [current, setCurrent] = useState(0);
 
+  // Auto slide
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % SLIDES.length);
+      setCurrent((prev) => (prev + 1) % slides.length);
     }, 4000);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black">
+    <section className="relative w-full h-screen overflow-hidden">
       
-      {/* Background Slider */}
-      {SLIDES.map((img, i) => (
-        <Image
-          key={i}
-          src={img}
-          alt="hero"
-          fill
-          priority={i === 0}
-          className={`object-cover transition-opacity duration-1000 ${
-            i === index ? "opacity-100" : "opacity-0"
+      {/* Background Images */}
+      {slides.map((img, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            index === current ? "opacity-100 z-0" : "opacity-0 z-0"
           }`}
+          style={{
+            backgroundImage: `url(${img})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
         />
       ))}
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/65" />
+      <div className="absolute inset-0 bg-black/70 z-10" />
 
       {/* Content */}
-      <div className="relative z-10 flex items-center justify-center h-full text-center px-6">
-        
-        {/* 👇 THIS padding fixes overlap */}
-        <div className="max-w-3xl w-full pt-24 md:pt-28 space-y-5">
+      <div className="relative z-20 flex items-center justify-center h-full text-center px-6">
+        <div className="max-w-4xl text-white">
           
-          <h1 className="text-white font-bold leading-tight
-            text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+          {/* Title */}
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
             IoT Security World Summit Abu Dhabi 2026
           </h1>
 
-          <p className="text-gray-300 text-sm sm:text-base md:text-lg">
+          {/* Date */}
+          <p className="mt-4 text-lg md:text-xl text-gray-300">
             9th July 2026 | Abu Dhabi
           </p>
 
-          <h2 className="text-white font-semibold
-            text-lg sm:text-xl md:text-2xl">
-            Leading the Global Charge Against Next-Gen IoT Threats
-          </h2>
+          {/* Tagline */}
+          <h2 className="mt-6 text-xl md:text-2xl font-semibold text-cyan-400">
+  Leading the Global Charge Against Next-Gen IoT Threats
+</h2>
 
-          <p className="text-gray-300 text-sm sm:text-base">
+          {/* Description */}
+          <p className="mt-4 text-gray-300 text-sm md:text-base leading-relaxed">
             Where Nations Secure the Future. Where Deals Get Done.
-          </p>
-
-          <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
+            <br /><br />
             A high-impact global platform where government authorities,
             critical infrastructure leaders, and cybersecurity innovators
             converge to secure the world’s most advanced IoT ecosystem.
           </p>
 
           {/* CTA */}
-          <div className="pt-4">
-            <button className="px-6 py-3 rounded-full border border-white/30 
-              text-white hover:bg-white hover:text-black 
-              transition duration-300">
-              Register Now
-            </button>
+          <div className="mt-8">
+            <Button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-3 text-lg rounded-xl shadow-lg shadow-cyan-500/30">
+  Register Now
+</Button>
           </div>
 
         </div>
+      </div>
+
+      {/* Dots Indicator */}
+      <div className="absolute bottom-6 w-full flex justify-center gap-3 z-20">
+        {slides.map((_, index) => (
+          <div
+            key={index}
+            onClick={() => setCurrent(index)}
+            className={`h-3 w-3 rounded-full cursor-pointer transition ${
+              current === index ? "bg-cyan-400" : "bg-white/40"
+            }`}
+          />
+        ))}
       </div>
     </section>
   );

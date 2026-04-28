@@ -1,89 +1,93 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ShieldCheck, Building2, Cpu } from 'lucide-react';
+import { Building2, ShieldCheck, Cpu } from "lucide-react";
 
-export function AboutSection() {
-  const highlights = [
-    {
-      icon: ShieldCheck,
-      title: 'Government Mandates',
-      description: 'Governments define cybersecurity mandates shaping national digital infrastructure'
-    },
-    {
-      icon: Building2,
-      title: 'Enterprise Challenges',
-      description: 'Enterprises solve mission-critical vulnerabilities across connected systems'
-    },
-    {
-      icon: Cpu,
-      title: 'Technology Solutions',
-      description: 'Technology leaders deliver real-world, scalable cybersecurity solutions'
-    },
-  ];
-
+export default function AboutSummit() {
   return (
-    <section
-      id="about"
-      className="py-24 bg-gradient-to-b from-background via-purple-500/5 to-background"
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative bg-[#0A0F1C] py-20 lg:py-28 overflow-hidden">
+      
+      {/* Background Glow */}
+      <div className="absolute right-0 top-0 w-[400px] h-[400px] bg-cyan-500/10 blur-[120px] rounded-full" />
 
-        {/* Header */}
-        <div className="text-center mb-16">
-          <p className="text-cyan-400 font-semibold tracking-widest uppercase mb-4">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+
+        {/* Heading */}
+        <div className="max-w-3xl">
+          <p className="text-cyan-400 uppercase tracking-wide text-sm font-medium">
             About the Summit
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            The UAE’s Most Critical Cybersecurity Gathering <br />
-            for <span className="glow-text-cyan">Connected Infrastructure</span>
+          <h2 className="mt-4 text-3xl md:text-5xl font-bold text-white leading-tight">
+            The UAE’s Most Critical Cybersecurity Gathering
+            <br /> for Connected Infrastructure
           </h2>
 
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            The United Arab Emirates is leading the global transformation of smart cities, 
-            digital government, and connected infrastructure, making IoT security a national priority, not an option.
+          <p className="mt-6 text-gray-400 text-base md:text-lg leading-relaxed">
+            The United Arab Emirates is leading the global transformation of smart cities,
+            digital government, and connected infrastructure, making IoT security a national
+            priority, not an option.
           </p>
         </div>
 
         {/* Investment Highlight */}
-        <div className="glass-dark rounded-xl p-8 border border-cyan-500/30 mb-16 text-center">
-          <p className="text-lg text-muted-foreground">
-            With investments projected to reach
-          </p>
+        <div className="mt-12 bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-xl max-w-xl">
+          <p className="text-gray-400 text-sm">With investments projected to reach</p>
 
-          <h3 className="text-3xl md:text-4xl font-bold text-cyan-400 my-3">
-            USD 24.6 Billion by 2031
+          <h3 className="mt-2 text-4xl md:text-5xl font-bold text-cyan-400">
+            USD 24.6 Billion
           </h3>
 
-          <p className="text-muted-foreground">
-            this summit is where:
-          </p>
+          <p className="text-gray-300 mt-2">by 2031</p>
         </div>
 
-        {/* Highlights */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {highlights.map((item, i) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={i}
-                className="glass-dark p-6 rounded-xl border border-cyan-500/30 hover:border-cyan-500/60 transition-all group hover:shadow-lg hover:shadow-cyan-500/20"
-              >
-                <div className="mb-4 p-3 w-fit rounded-lg bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-all">
-                  <Icon size={24} className="text-cyan-400" />
-                </div>
+        {/* 3 Columns */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                <h3 className="font-bold text-lg mb-2 text-foreground">
-                  {item.title}
-                </h3>
+          {/* Government */}
+          <div className="group bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-cyan-400/40 transition">
+            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-cyan-500/10 mb-4">
+              <Building2 className="text-cyan-400" size={24} />
+            </div>
 
-                <p className="text-sm text-muted-foreground">
-                  {item.description}
-                </p>
-              </div>
-            );
-          })}
+            <h4 className="text-white font-semibold text-lg">
+              Government Mandates
+            </h4>
+
+            <p className="mt-3 text-gray-400 text-sm leading-relaxed">
+              Governments define cybersecurity mandates shaping national digital infrastructure
+            </p>
+          </div>
+
+          {/* Enterprise */}
+          <div className="group bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-cyan-400/40 transition">
+            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-cyan-500/10 mb-4">
+              <ShieldCheck className="text-cyan-400" size={24} />
+            </div>
+
+            <h4 className="text-white font-semibold text-lg">
+              Enterprise Challenges
+            </h4>
+
+            <p className="mt-3 text-gray-400 text-sm leading-relaxed">
+              Enterprises solve mission-critical vulnerabilities across connected systems
+            </p>
+          </div>
+
+          {/* Technology */}
+          <div className="group bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-cyan-400/40 transition">
+            <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-cyan-500/10 mb-4">
+              <Cpu className="text-cyan-400" size={24} />
+            </div>
+
+            <h4 className="text-white font-semibold text-lg">
+              Technology Solutions
+            </h4>
+
+            <p className="mt-3 text-gray-400 text-sm leading-relaxed">
+              Technology leaders deliver real-world, scalable cybersecurity solutions
+            </p>
+          </div>
+
         </div>
 
       </div>
