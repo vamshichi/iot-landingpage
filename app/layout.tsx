@@ -9,23 +9,23 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'IoT Security World Summit Abu Dhabi 2026',
   description: 'Join the most important cybersecurity and IoT infrastructure conference in the Middle East. Connect with global leaders, innovative solutions, and the future of secure IoT ecosystems.',
-  generator: 'v0.app',
+  generator: 'vamshi',
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
+        url: '/iotlogo.png',
         media: '(prefers-color-scheme: light)',
       },
       {
-        url: '/icon-dark-32x32.png',
+        url: '/iotlogo.png',
         media: '(prefers-color-scheme: dark)',
       },
       {
-        url: '/icon.svg',
+        url: '/iotlogo.png',
         type: 'image/svg+xml',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: '/iotlogo.png',
   },
   openGraph: {
     title: 'IoT Security World Summit Abu Dhabi 2026',
