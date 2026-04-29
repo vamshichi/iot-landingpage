@@ -64,6 +64,7 @@ export function SpeakersSection() {
           </motion.h3>
 
           {/* 🔥 Button Animation */}
+          <a href="/#contact" >
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -78,6 +79,7 @@ export function SpeakersSection() {
               <ArrowRight size={18} />
             </motion.span>
           </motion.button>
+          </a>
 
         </motion.div>
 

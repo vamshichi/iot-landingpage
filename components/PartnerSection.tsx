@@ -81,7 +81,7 @@ export function PartnerSection() {
         </motion.div>
 
         {/* 🔥 CTA */}
-        <motion.button
+        {/* <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0, y: 20 }}
@@ -97,7 +97,7 @@ export function PartnerSection() {
           >
             <ArrowRight size={18} />
           </motion.span>
-        </motion.button>
+        </motion.button> */}
 
       </div>
     </section>

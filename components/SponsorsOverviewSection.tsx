@@ -139,7 +139,7 @@ export function SponsorsOverviewSection() {
           <p className="text-gray-600 mb-6 max-w-xl mx-auto">
             Custom packages designed for visibility, engagement & deal-making
           </p>
-
+          <a href="/#contact" >
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -148,7 +148,8 @@ export function SponsorsOverviewSection() {
             <Download size={18} />
             Download Sponsorship Brochure
           </motion.button>
-
+          </a>
+          
           {/* Outcome */}
           <motion.div
             className="mt-8 pt-6 border-t border-gray-200"

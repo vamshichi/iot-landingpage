@@ -70,7 +70,7 @@ export function SessionHighlightsSection() {
         </motion.div>
 
         {/* 🔥 CTA Block */}
-        <motion.div
+        {/* <motion.div
           className="rounded-xl border border-gray-200 p-8 text-center bg-gray-50"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -88,7 +88,7 @@ export function SessionHighlightsSection() {
             <Download size={18} />
             Download Full Agenda
           </motion.button>
-        </motion.div>
+        </motion.div> */}
 
       </div>
     </section>

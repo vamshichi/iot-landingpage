@@ -1,60 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
-
-const slides = [
-  "/images/oil-gas.png",
-  "/images/traffic.png",
-  "/images/manufacturing.png",
-];
+import { motion } from "framer-motion";
 
 export default function HeroSection() {
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section id="home" className="relative w-full h-screen overflow-hidden">
 
-      {/* 🔥 Animated Background */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.2 }}
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${slides[current]})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-      </AnimatePresence>
+      {/* 🎬 VIDEO BACKGROUND */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="/hero.mp4" type="video/mp4" />
+      </video>
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/70 z-10" />
+      {/* 🔥 Gradient Overlay (better than plain black) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90 z-10" />
 
-      {/* 🔥 Content Animation */}
+      {/* Optional Glow Effect (premium feel) */}
+      <div className="absolute inset-0 bg-cyan-500/10 blur-[120px] z-0" />
+
+      {/* 🔥 Content */}
       <div className="relative z-20 flex items-center justify-center h-full text-center px-6">
         <motion.div
-          className="max-w-4xl text-white"
+          className="max-w-4xl text-white pt-7"
           initial="hidden"
           animate="visible"
           variants={{
             hidden: {},
             visible: {
-              transition: {
-                staggerChildren: 0.3,
-              },
+              transition: { staggerChildren: 0.3 },
             },
           }}
         >
@@ -115,26 +94,16 @@ export default function HeroSection() {
               visible: { opacity: 1, scale: 1 },
             }}
           >
-            <Button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-3 text-lg rounded-xl shadow-lg shadow-cyan-500/30">
-              Register Now
-            </Button>
+            <a href="/#contact">
+              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-3 text-lg rounded-xl shadow-lg shadow-cyan-500/30">
+                Register Now
+              </Button>
+            </a>
           </motion.div>
 
         </motion.div>
       </div>
 
-      {/* Dots */}
-      <div className="absolute bottom-6 w-full flex justify-center gap-3 z-20">
-        {slides.map((_, index) => (
-          <div
-            key={index}
-            onClick={() => setCurrent(index)}
-            className={`h-3 w-3 rounded-full cursor-pointer transition ${
-              current === index ? "bg-cyan-400" : "bg-white/40"
-            }`}
-          />
-        ))}
-      </div>
     </section>
   );
 }
