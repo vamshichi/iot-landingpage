@@ -80,7 +80,7 @@ export function MarketOpportunitySection() {
         </motion.div>
 
         {/* 🔥 Reality vs Shift */}
-        <motion.div
+        {/* <motion.div
           className="grid md:grid-cols-2 gap-6"
           initial="hidden"
           whileInView="visible"
@@ -90,7 +90,7 @@ export function MarketOpportunitySection() {
           }}
         >
           {/* Reality */}
-          <motion.div
+          {/* <motion.div
             variants={{
               hidden: { opacity: 0, x: -40 },
               visible: { opacity: 1, x: 0 },
@@ -106,10 +106,10 @@ export function MarketOpportunitySection() {
             <p className="text-muted-foreground text-lg">
               Every connected device = A potential attack point
             </p>
-          </motion.div>
+          </motion.div> */}
 
           {/* Shift */}
-          <motion.div
+          {/* <motion.div
             variants={{
               hidden: { opacity: 0, x: 40 },
               visible: { opacity: 1, x: 0 },
@@ -125,8 +125,8 @@ export function MarketOpportunitySection() {
             <p className="text-muted-foreground text-lg">
               Security is legally enforced, budget-backed, mission-critical
             </p>
-          </motion.div>
-        </motion.div>
+          </motion.div> */}
+        {/* </motion.div> */}
 
       </div>
     </section>

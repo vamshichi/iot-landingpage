@@ -20,20 +20,21 @@ export default function AboutSummit() {
 
           {/* 🖼️ Image */}
           <motion.div
-            initial={{ opacity: 0, x: -80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="bg-white rounded-2xl p-3 shadow-xl"
-          >
-            <Image
-              src="/images/about-iot.png"
-              alt="IoT Security"
-              width={600}
-              height={400}
-              className="rounded-xl object-cover w-full h-full"
-            />
-          </motion.div>
+  initial={{ opacity: 0, x: -80 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.8 }}
+  viewport={{ once: true }}
+  className="bg-white rounded-2xl p-3 shadow-xl h-full min-h-[420px]"
+>
+  <div className="relative w-full h-full">
+    <Image
+      src="/images/about-iot.png"
+      alt="IoT Security"
+      fill
+      className="rounded-xl object-cover"
+    />
+  </div>
+</motion.div>
 
           {/* 📄 Content */}
           <motion.div
@@ -72,7 +73,7 @@ export default function AboutSummit() {
           </motion.div>
         </div>
 
-        {/* 🔥 Cards */}
+        {/* 🔥 Cards
         <motion.div
           className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8"
           initial="hidden"
@@ -127,9 +128,89 @@ export default function AboutSummit() {
               </motion.div>
             );
           })}
-        </motion.div>
+        </motion.div> */}
+        <motion.div
+  className="mt-20 text-center max-w-3xl mx-auto"
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.7 }}
+  viewport={{ once: true }}
+>
+  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 leading-snug">
+    Region’s Most Anticipated IoT Security Event supporting :
+  </h3>
+</motion.div>
 
-      </div>
+{/* 🔥 Cards */}
+<motion.div
+  className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6"
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
+  variants={{
+    visible: {
+      transition: { staggerChildren: 0.2 },
+    },
+  }}
+>
+  {[
+    {
+      icon: Building2,
+      label: "Execute",
+      title: "Government Mandates",
+      text: "Governments define cybersecurity mandates shaping national digital infrastructure",
+    },
+    {
+      icon: ShieldCheck,
+      label: "Discuss",
+      title: "Enterprise Challenges",
+      text: "Enterprises solve mission-critical vulnerabilities across connected systems",
+    },
+    {
+      icon: Cpu,
+      label: "Explore",
+      title: "Technology Solutions",
+      text: "Technology leaders deliver real-world, scalable cybersecurity solutions",
+    },
+  ].map((item, index) => {
+    const Icon = item.icon;
+
+    return (
+      <motion.div
+        key={index}
+        variants={{
+          hidden: { opacity: 0, y: 40 },
+          visible: { opacity: 1, y: 0 },
+        }}
+        whileHover={{ y: -5 }}
+        className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition"
+      >
+        {/* 🔥 Icon + Side Label */}
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-cyan-100">
+            <Icon className="text-cyan-500" size={20} />
+          </div>
+
+          <span className="text-sm font-semibold text-cyan-600 uppercase tracking-wide">
+            {item.label}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h4 className="text-gray-900 font-semibold text-base">
+          {item.title}
+        </h4>
+
+        {/* Description */}
+        <p className="mt-2 text-gray-600 text-sm leading-relaxed">
+          {item.text}
+        </p>
+      </motion.div>
+    );
+  })}
+</motion.div>
+      </div>{/* 🔥 Section Heading */}
+
     </section>
   );
 }

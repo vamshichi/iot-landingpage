@@ -23,9 +23,10 @@ export default function Home() {
         <HeroSection />
         <WhySection />
         <AboutSection />
-        <WhySummitSection />
+        {/* <WhySummitSection /> */}
+        <MarketOpportunitySection />
          <SponsorsSection />
-         <MarketOpportunitySection />
+         
         <AgendaSection />
         <SessionHighlightsSection />
         <SpeakersSection />

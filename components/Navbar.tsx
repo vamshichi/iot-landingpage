@@ -4,9 +4,11 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
+import { useFormModal } from "@/components/FormModal";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { openModal } = useFormModal();
 
   const navItems = [
     { label: "Home", href: "#home" },
@@ -23,7 +25,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
 
-          {/* ✅ Logo Image */}
+          {/* Logo */}
           <Link href="#" className="flex items-center">
             <Image
               src="/iotlogo.png"
@@ -48,14 +50,25 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex items-center space-x-4">
-            <a
-              href="#contact"
-              className="px-6 py-2 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 hover:shadow-lg hover:shadow-cyan-500/30 transition-all inline-block"
+          {/* ✅ NEW CTA Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+
+            {/* Delegate */}
+            <button
+              onClick={() => openModal("delegate")}
+              className="px-5 py-2 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 hover:shadow-lg hover:shadow-cyan-500/30 transition-all"
             >
-              Attend
-            </a>
+              Delegate
+            </button>
+
+            {/* Sponsor */}
+            <button
+              onClick={() => openModal("sponsor")}
+              className="px-5 py-2 rounded-lg border border-cyan-500 text-cyan-500 font-semibold hover:bg-cyan-500 hover:text-white transition-all"
+            >
+              Sponsor
+            </button>
+
           </div>
 
           {/* Mobile Menu Button */}
@@ -69,7 +82,8 @@ export function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden pb-4 space-y-2 bg-white">
+          <div className="md:hidden pb-4 space-y-3 bg-white">
+
             {navItems.map((item) => (
               <a
                 key={item.label}
@@ -81,12 +95,31 @@ export function Navbar() {
               </a>
             ))}
 
-            <a
-              href="#contact"
-              className="px-6 py-2 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 hover:shadow-lg hover:shadow-cyan-500/30 transition-all inline-block"
-            >
-              Attend
-            </a>
+            {/* Mobile CTA Buttons */}
+            <div className="flex flex-col gap-2 px-3 pt-2">
+
+              <button
+                onClick={() => {
+                  openModal("delegate");
+                  setIsOpen(false);
+                }}
+                className="w-full px-4 py-2 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 transition-all"
+              >
+                Register as Delegate
+              </button>
+
+              <button
+                onClick={() => {
+                  openModal("sponsor");
+                  setIsOpen(false);
+                }}
+                className="w-full px-4 py-2 rounded-lg border border-cyan-500 text-cyan-500 font-semibold hover:bg-cyan-500 hover:text-white transition-all"
+              >
+                Become a Sponsor
+              </button>
+
+            </div>
+
           </div>
         )}
       </div>
