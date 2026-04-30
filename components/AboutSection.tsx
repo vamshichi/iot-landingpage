@@ -24,11 +24,11 @@ export default function AboutSummit() {
   whileInView={{ opacity: 1, x: 0 }}
   transition={{ duration: 0.8 }}
   viewport={{ once: true }}
-  className="bg-white rounded-2xl p-3 shadow-xl h-full min-h-[420px]"
+  className=" h-full min-h-[420px]"
 >
   <div className="relative w-full h-full">
     <Image
-      src="/images/about-iot.png"
+      src="/images/about-image.png"
       alt="IoT Security"
       fill
       className="rounded-xl object-cover"

@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
-import { Download } from "lucide-react";
+import { motion, useAnimation } from "framer-motion";
 
 export function SessionHighlightsSection() {
   const highlights = [
@@ -16,11 +15,25 @@ export function SessionHighlightsSection() {
     "Designed for real-world problem solving",
   ];
 
+  const duplicated = [...highlights, ...highlights];
+  const controls = useAnimation();
+
+  React.useEffect(() => {
+    controls.start({
+      x: ["0%", "-50%"],
+      transition: {
+        ease: "linear",
+        duration: 25,
+        repeat: Infinity,
+      },
+    });
+  }, [controls]);
+
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* 🔥 Header */}
+        {/* Header */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 40 }}
@@ -32,7 +45,7 @@ export function SessionHighlightsSection() {
             Session Highlights
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight text-gray-900">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
             Built for{" "}
             <span className="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
               Real-World Impact
@@ -40,55 +53,40 @@ export function SessionHighlightsSection() {
           </h2>
         </motion.div>
 
-        {/* 🔥 Highlights Grid */}
-        <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-16"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            visible: {
-              transition: { staggerChildren: 0.15 },
-            },
-          }}
-        >
-          {highlights.map((item, i) => (
-            <motion.div
-              key={i}
-              variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              whileHover={{ y: -6, scale: 1.03 }}
-              className="bg-gray-50 p-5 rounded-xl border border-gray-200 text-center hover:shadow-md transition"
-            >
-              <p className="text-sm font-semibold text-gray-800">
-                {item}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* 🔥 Marquee Wrapper (Fix Overflow Issue) */}
+        <div className="relative overflow-hidden">
 
-        {/* 🔥 CTA Block */}
-        {/* <motion.div
-          className="rounded-xl border border-gray-200 p-8 text-center bg-gray-50"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <h3 className="text-2xl font-bold mb-4 text-gray-900">
-            Full Conference Agenda
-          </h3>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/40 transition"
+          <motion.div
+            className="flex gap-5"
+            animate={controls}
+            onHoverStart={() => controls.stop()}
+            onHoverEnd={() =>
+              controls.start({
+                x: ["0%", "-50%"],
+                transition: {
+                  ease: "linear",
+                  duration: 25,
+                  repeat: Infinity,
+                },
+              })
+            }
           >
-            <Download size={18} />
-            Download Full Agenda
-          </motion.button>
-        </motion.div> */}
+            {duplicated.map((item, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[250px] bg-gray-50 p-5 rounded-xl border border-gray-200 text-center hover:shadow-md transition"
+              >
+                <p className="text-sm font-semibold text-gray-800">
+                  {item}
+                </p>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Premium Fade Edges */}
+          <div className="pointer-events-none absolute top-0 left-0 h-full w-24 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
+          <div className="pointer-events-none absolute top-0 right-0 h-full w-24 bg-gradient-to-l from-white via-white/80 to-transparent z-10" />
+        </div>
 
       </div>
     </section>

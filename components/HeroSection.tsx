@@ -7,7 +7,7 @@ export default function HeroSection() {
   return (
     <section id="home" className="relative w-full h-screen overflow-hidden">
 
-      {/* 🎬 VIDEO BACKGROUND */}
+      {/* VIDEO */}
       <video
         autoPlay
         muted
@@ -18,40 +18,44 @@ export default function HeroSection() {
         <source src="/hero.mp4" type="video/mp4" />
       </video>
 
-      {/* 🔥 Gradient Overlay (better than plain black) */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90 z-10" />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/95 z-10" />
 
-      {/* Optional Glow Effect (premium feel) */}
-      <div className="absolute inset-0 bg-cyan-500/10 blur-[120px] z-0" />
+      {/* Glow */}
+      <div className="absolute inset-0 bg-cyan-500/10 blur-[140px] z-0" />
 
-      {/* 🔥 Content */}
-      <div className="relative z-20 flex items-center justify-center h-full text-center px-6">
+      {/* CONTENT */}
+      <div className="relative z-20 flex items-start justify-center h-full text-center px-6 py-32">
         <motion.div
-          className="max-w-4xl text-white pt-7"
+          className="max-w-5xl text-white space-y-6"
           initial="hidden"
           animate="visible"
           variants={{
             hidden: {},
-            visible: {
-              transition: { staggerChildren: 0.3 },
-            },
+            visible: { transition: { staggerChildren: 0.25 } },
           }}
         >
 
           {/* Title */}
           <motion.h1
-            className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight"
+            className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight"
             variants={{
-              hidden: { opacity: 0, y: 50 },
+              hidden: { opacity: 0, y: 60 },
               visible: { opacity: 1, y: 0 },
             }}
           >
-            IoT Security World Summit Abu Dhabi 2026
+            <span className="bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+              IoT Security World Summit
+            </span>
+            <br />
+            <span className="text-cyan-400">
+              Abu Dhabi 2026
+            </span>
           </motion.h1>
 
           {/* Date */}
           <motion.p
-            className="mt-4 text-lg md:text-xl text-gray-300"
+            className="text-lg md:text-xl text-gray-300 tracking-wide"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: { opacity: 1, y: 0 },
@@ -62,7 +66,7 @@ export default function HeroSection() {
 
           {/* Tagline */}
           <motion.h2
-            className="mt-6 text-xl md:text-2xl font-semibold text-cyan-400"
+            className="text-xl md:text-2xl font-semibold text-cyan-400 tracking-wide"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: { opacity: 1, y: 0 },
@@ -73,7 +77,7 @@ export default function HeroSection() {
 
           {/* Description */}
           <motion.p
-            className="mt-4 text-gray-300 text-sm md:text-base leading-relaxed"
+            className="text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto"
             variants={{
               hidden: { opacity: 0, y: 30 },
               visible: { opacity: 1, y: 0 },
@@ -88,14 +92,14 @@ export default function HeroSection() {
 
           {/* CTA */}
           <motion.div
-            className="mt-8"
+            className="pt-4"
             variants={{
-              hidden: { opacity: 0, scale: 0.8 },
+              hidden: { opacity: 0, scale: 0.9 },
               visible: { opacity: 1, scale: 1 },
             }}
           >
             <a href="/#contact">
-              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-8 py-3 text-lg rounded-xl shadow-lg shadow-cyan-500/30">
+              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold px-10 py-4 text-lg rounded-xl shadow-lg shadow-cyan-500/40">
                 Register Now
               </Button>
             </a>

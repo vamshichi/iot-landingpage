@@ -21,15 +21,16 @@ export default function Home() {
       <Navbar />
       <main className="overflow-hidden">
         <HeroSection />
-        <WhySection />
         <AboutSection />
+        <WhySection />
+
         {/* <WhySummitSection /> */}
         {/* <MarketOpportunitySection /> */}
         <IndustriesSection />
         
         <AgendaSection />
         <SessionHighlightsSection />
-        <SpeakersSection />
+        {/* <SpeakersSection /> */}
         <WhoShouldAttendSection />
         <SponsorsOverviewSection />
          <SponsorsSection />

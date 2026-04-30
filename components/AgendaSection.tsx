@@ -36,8 +36,26 @@ export function AgendaSection() {
   ];
 
   return (
-    <section id="agenda" className="py-24 bg-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="agenda" className="relative py-24 overflow-hidden">
+
+      {/* 🎬 Background Video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="/v2.mp4" type="video/mp4" />
+      </video>
+
+      {/* 🌌 Dark Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/90" />
+
+      {/* ✨ Subtle Glow Effect */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/20 blur-3xl opacity-30" />
+
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* 🔥 Header */}
         <motion.div
@@ -47,15 +65,15 @@ export function AgendaSection() {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <p className="text-cyan-500 font-semibold tracking-widest uppercase mb-4">
+          <p className="text-cyan-400 font-semibold tracking-widest uppercase mb-4">
             Agenda
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4 text-gray-900">
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-4 text-white">
             Theme: Securing UAE’s Critical & National Infrastructure
           </h2>
 
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-300 text-lg">
             Themes Overview
           </p>
         </motion.div>
@@ -82,16 +100,16 @@ export function AgendaSection() {
                   hidden: { opacity: 0, y: 40 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                whileHover={{ y: -8, scale: 1.03 }}
-                className="group bg-gray-50 p-8 rounded-xl border border-gray-200 hover:shadow-lg transition"
+                whileHover={{ y: -10, scale: 1.03 }}
+                className="group backdrop-blur-md bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-cyan-400/40 transition-all hover:shadow-xl hover:shadow-cyan-500/10"
               >
                 {/* Icon */}
-                <div className="mb-5 p-3 w-fit rounded-lg bg-cyan-100 group-hover:bg-cyan-200 transition">
-                  <Icon className="text-cyan-600" size={26} />
+                <div className="mb-5 p-3 w-fit rounded-lg bg-cyan-500/10 group-hover:bg-cyan-500/20 transition">
+                  <Icon className="text-cyan-400" size={26} />
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-bold mb-4 text-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-white">
                   {theme.title}
                 </h3>
 
@@ -100,9 +118,9 @@ export function AgendaSection() {
                   {theme.points.map((point, index) => (
                     <li
                       key={index}
-                      className="flex items-start gap-3 text-gray-600 text-sm"
+                      className="flex items-start gap-3 text-gray-300 text-sm"
                     >
-                      <div className="w-2 h-2 bg-cyan-500 rounded-full mt-2"></div>
+                      <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2"></div>
                       <span>{point}</span>
                     </li>
                   ))}
