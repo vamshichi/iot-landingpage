@@ -45,7 +45,7 @@ async function sendEmail(data: FormSubmissionData) {
     // Email to admin/contact inbox
     const adminMailOptions = {
       from: process.env.SMTP_FROM_EMAIL || '"IoT Summit" <noreply@iotsummit.ae>',
-      to: process.env.CONTACT_EMAIL || 'info@iotsummit.ae',
+      to: process.env.CONTACT_EMAIL || 'enquiry@confexmeet.com',
       subject: `New Inquiry from ${data.name} - ${data.interestType}`,
       html: generateAdminEmailTemplate(data),
     };

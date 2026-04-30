@@ -39,7 +39,7 @@ SMTP_PORT=587
 SMTP_SECURE=false
 SMTP_USER=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
-CONTACT_EMAIL=info@iotsummit.ae
+CONTACT_EMAIL=enquiry@confexmeet.com
 ```
 
 3. Test form submission at `/contact`
@@ -170,8 +170,8 @@ vercel
 
 ## Questions?
 
-Email: info@iotsummit.ae
-Phone: +971 4 XXX XXXX
+Email: enquiry@confexmeet.com
+Phone: +91 7975 429 127
 
 ---
 

@@ -185,7 +185,7 @@ docker run -d \
   -e SMTP_USER=your-email@gmail.com \
   -e SMTP_PASSWORD=your-app-password \
   -e SMTP_FROM_EMAIL="IoT Summit <noreply@iotsummit.ae>" \
-  -e CONTACT_EMAIL=info@iotsummit.ae \
+  -e CONTACT_EMAIL=enquiry@confexmeet.com \
   --name iot-summit \
   iot-summit:latest
 ```

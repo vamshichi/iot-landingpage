@@ -162,7 +162,7 @@ export function generateUserEmailTemplate(data: FormSubmissionData): string {
           <div class="footer">
             <p>IoT Security World Summit Abu Dhabi 2026</p>
             <p>March 15-17, 2026 | Abu Dhabi International Convention Centre</p>
-            <p><a href="mailto:info@iotsummit.ae" style="color: #00d4ff; text-decoration: none;">info@iotsummit.ae</a> | +971 4 XXX XXXX</p>
+            <p><a href="mailto:enquiry@confexmeet.com" style="color: #00d4ff; text-decoration: none;">enquiry@confexmeet.com</a> | +91 7975 429 127</p>
           </div>
         </div>
       </body>

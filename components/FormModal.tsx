@@ -168,7 +168,7 @@ function SponsorForm() {
         <Field label="Industry" required>
           <SelectInput options={["Cybersecurity","IoT Solutions","Cloud","AI","Telecom","System Integrator","Consulting","Government","Startup","Others"]} />
         </Field>
-        <Field label="Headquarters Location" required><TextInput placeholder="Abu Dhabi, UAE" /></Field>
+        <Field label="Headquarters Location" required><TextInput placeholder="5C, 115, OMBR Layout, Bangalore-43" /></Field>
         <Field label="Company Size" required>
           <SelectInput options={["1–50","51–200","201–500","500–1000","1000+"]} />
         </Field>

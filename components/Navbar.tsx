@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
@@ -8,7 +8,16 @@ import { useFormModal } from "@/components/FormModal";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { openModal } = useFormModal();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { label: "Home", href: "#home" },
@@ -21,7 +30,13 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white border-b border-gray-200 shadow-sm">
+    <nav
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/80 backdrop-blur-md shadow-md border-b border-gray-200"
+          : "bg-gradient-to-r from-white/10 via-white/5 to-black/20 backdrop-blur-sm"
+      }`}
+    >
       <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
 
@@ -43,17 +58,20 @@ export function Navbar() {
               <a
                 key={item.label}
                 href={item.href}
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-cyan-500 transition-all"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                  isScrolled
+                    ? "text-gray-700 hover:text-cyan-500"
+                    : "text-white/90 hover:text-white"
+                }`}
               >
                 {item.label}
               </a>
             ))}
           </div>
 
-          {/* ✅ NEW CTA Buttons */}
+          {/* CTA Buttons (UNCHANGED COLORS) */}
           <div className="hidden md:flex items-center gap-3">
 
-            {/* Delegate */}
             <button
               onClick={() => openModal("delegate")}
               className="px-5 py-2 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 hover:shadow-lg hover:shadow-cyan-500/30 transition-all"
@@ -61,7 +79,6 @@ export function Navbar() {
               Delegate
             </button>
 
-            {/* Sponsor */}
             <button
               onClick={() => openModal("sponsor")}
               className="px-5 py-2 rounded-lg border border-cyan-500 text-cyan-500 font-semibold hover:bg-cyan-500 hover:text-white transition-all"
@@ -73,7 +90,9 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-gray-700 hover:text-cyan-500"
+            className={`md:hidden transition ${
+              isScrolled ? "text-gray-700" : "text-white"
+            }`}
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -82,13 +101,13 @@ export function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden pb-4 space-y-3 bg-white">
+          <div className="md:hidden pb-4 space-y-3 bg-white/95 backdrop-blur-md mt-2 rounded-xl shadow-lg">
 
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-cyan-500 transition-all"
+                className="block px-4 py-2 text-sm font-medium text-gray-700 hover:text-cyan-500 transition-all"
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
@@ -119,7 +138,6 @@ export function Navbar() {
               </button>
 
             </div>
-
           </div>
         )}
       </div>

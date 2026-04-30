@@ -14,6 +14,7 @@ import { MarketOpportunitySection } from '@/components/MarketOpportunitySection'
 import { SessionHighlightsSection } from '@/components/SessionHighlightsSection';
 import { WhoShouldAttendSection } from '@/components/WhoShouldAttendSection';
 import { SponsorsOverviewSection } from '@/components/SponsorsOverviewSection';
+import WhatsAppButton from '@/components/whatsapp';
 
 export default function Home() {
   return (
@@ -36,6 +37,7 @@ export default function Home() {
          <SponsorsSection />
         {/* <PartnerSection /> */}
         <ContactSection />
+        <WhatsAppButton />
       </main>
       <Footer />
     </>

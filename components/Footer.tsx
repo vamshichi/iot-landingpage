@@ -36,17 +36,17 @@ export function Footer() {
             <div className="space-y-3 text-sm text-muted-foreground">
               <div className="flex items-center space-x-2">
                 <Mail size={16} className="text-cyan-400" />
-                <a href="mailto:info@iotsummit.ae" className="hover:text-cyan-400 transition-all">
-                  info@iotsummit.ae
+                <a href="mailto:enquiry@confexmeet.com" className="hover:text-cyan-400 transition-all">
+                  enquiry@confexmeet.com
                 </a>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone size={16} className="text-cyan-400" />
-                <span>+971 4 XXX XXXX</span>
+                <span>+91 7975 429 127</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin size={16} className="text-cyan-400" />
-                <span>Abu Dhabi, UAE</span>
+                <span>5C, 115, OMBR Layout, Bangalore-43</span>
               </div>
             </div>
           </div>

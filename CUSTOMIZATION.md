@@ -116,10 +116,10 @@ const industries = [
 
 ```tsx
 // Update email
-<a href="mailto:info@iotsummit.ae">info@iotsummit.ae</a>
+<a href="mailto:enquiry@confexmeet.com">enquiry@confexmeet.com</a>
 
 // Update phone
-<span>+971 4 XXX XXXX</span>
+<span>+91 7975 429 127</span>
 
 // Update location
 <span>Abu Dhabi International Convention Centre</span>
