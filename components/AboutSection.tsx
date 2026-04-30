@@ -137,7 +137,7 @@ export default function AboutSummit() {
   viewport={{ once: true }}
 >
   <h3 className="text-2xl md:text-3xl font-bold text-gray-900 leading-snug">
-    Region’s Most Anticipated IoT Security Event supporting :
+    Region’s Most Anticipated IoT Security Event Supporting Government Objectives :
   </h3>
 </motion.div>
 
@@ -183,15 +183,15 @@ export default function AboutSummit() {
           visible: { opacity: 1, y: 0 },
         }}
         whileHover={{ y: -5 }}
-        className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition"
+        className="bg-blue-100 border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition"
       >
         {/* 🔥 Icon + Side Label */}
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3 mb-3 ">
           <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-cyan-100">
             <Icon className="text-cyan-500" size={20} />
           </div>
 
-          <span className="text-sm font-semibold text-cyan-600 uppercase tracking-wide">
+          <span className="text-xl font-semibold text-cyan-600 uppercase tracking-wide">
             {item.label}
           </span>
         </div>

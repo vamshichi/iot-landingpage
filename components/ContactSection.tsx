@@ -11,7 +11,7 @@ export function ContactSection() {
   const contacts = [
     { icon: Users,      title: "Delegate Enquiries",    text: "Register, passes, and participation details, please contact" },
     { icon: Briefcase,  title: "Sponsorship Enquiries", text: "Partnerships, branding & business opportunities, please contact" },
-    { icon: HelpCircle, title: "General Contact",       text: "For all event-related queries, please contact" },
+    { icon: HelpCircle, title: "Media and Association partners",       text: "For all event-related queries, please contact" },
   ];
 
   const BUTTONS: { label: string; key: ModalKey }[] = [

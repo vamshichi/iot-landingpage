@@ -185,7 +185,7 @@ function SponsorForm() {
 
       <SectionTitle>Sponsorship Objectives</SectionTitle>
       <Field label="Key Objectives for Sponsoring" required>
-        <CheckGroup items={["Brand Visibility","Lead Generation","Thought Leadership","Product Launch","Networking & Partnerships","Market Expansion"]} />
+        <CheckGroup items={["Brand Visibility","Lead Generation","Thought Leadership / speaking slots","Product Launch","Networking & Partnerships","Market Expansion"]} />
       </Field>
       <Field label="Target Audience You Want to Connect With" required>
         <CheckGroup items={["CISOs","CIOs / CTOs","Government Leaders","Smart City Authorities","Enterprise IT Leaders","Investors / Startups"]} />

@@ -3,8 +3,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Building2, Users, Briefcase } from "lucide-react";
+import { useFormModal } from "@/components/FormModal";
 
 export function WhoShouldAttendSection() {
+  const { openModal } = useFormModal();
+
   const sections = [
     {
       icon: Building2,
@@ -40,7 +43,7 @@ export function WhoShouldAttendSection() {
     <section className="py-24 bg-gradient-to-b from-background via-purple-500/5 to-background">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* 🔥 Header Animation */}
+        {/* Header */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 40 }}
@@ -57,7 +60,7 @@ export function WhoShouldAttendSection() {
           </h2>
         </motion.div>
 
-        {/* 🔥 Grid Animation */}
+        {/* Cards */}
         <motion.div
           className="grid md:grid-cols-3 gap-6"
           initial="hidden"
@@ -65,9 +68,7 @@ export function WhoShouldAttendSection() {
           viewport={{ once: true }}
           variants={{
             visible: {
-              transition: {
-                staggerChildren: 0.2,
-              },
+              transition: { staggerChildren: 0.2 },
             },
           }}
         >
@@ -85,7 +86,7 @@ export function WhoShouldAttendSection() {
                 transition={{ duration: 0.3 }}
                 className="glass-dark p-8 rounded-xl border border-cyan-500/30 hover:border-cyan-500/60 transition-all group hover:shadow-lg hover:shadow-cyan-500/20"
               >
-                {/* 🔥 Icon Animation */}
+                {/* Icon */}
                 <motion.div
                   className="mb-5 p-3 w-fit rounded-lg bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-all"
                   whileHover={{ rotate: 5, scale: 1.1 }}
@@ -94,35 +95,43 @@ export function WhoShouldAttendSection() {
                 </motion.div>
 
                 {/* Title */}
-                <motion.h3
-                  className="text-xl font-bold mb-4 text-foreground"
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  viewport={{ once: true }}
-                >
+                <h3 className="text-xl font-bold mb-4 text-foreground">
                   {section.title}
-                </motion.h3>
+                </h3>
 
                 {/* Points */}
                 <ul className="space-y-3">
                   {section.points.map((point, index) => (
-                    <motion.li
+                    <li
                       key={index}
                       className="flex items-start gap-3 text-muted-foreground text-sm"
-                      initial={{ opacity: 0, x: -10 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
                     >
                       <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2"></div>
                       <span>{point}</span>
-                    </motion.li>
+                    </li>
                   ))}
                 </ul>
               </motion.div>
             );
           })}
+        </motion.div>
+
+        {/* 🔥 CTA Button */}
+        <motion.div
+          className="mt-16 flex justify-center"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => openModal("delegate")}
+            className="px-8 py-4 rounded-xl bg-cyan-500 text-white font-semibold text-lg shadow-lg shadow-cyan-500/30 hover:bg-cyan-600 transition-all"
+          >
+            Join Us as a Delegate
+          </motion.button>
         </motion.div>
 
       </div>

@@ -24,16 +24,16 @@ export default function Home() {
         <WhySection />
         <AboutSection />
         {/* <WhySummitSection /> */}
-        <MarketOpportunitySection />
-         <SponsorsSection />
-         
+        {/* <MarketOpportunitySection /> */}
+        <IndustriesSection />
+        
         <AgendaSection />
         <SessionHighlightsSection />
         <SpeakersSection />
-        <IndustriesSection />
         <WhoShouldAttendSection />
         <SponsorsOverviewSection />
-        <PartnerSection />
+         <SponsorsSection />
+        {/* <PartnerSection /> */}
         <ContactSection />
       </main>
       <Footer />

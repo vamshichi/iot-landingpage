@@ -13,12 +13,12 @@ export function SponsorsOverviewSection() {
   ];
 
   const categories = [
-    "AI Cybersecurity",
-    "OT / ICS Security",
-    "Zero Trust Platforms",
-    "Sovereign Cloud Providers",
-    "Telecom & 5G Security",
-    "Quantum Security",
+    "AI Cybersecurity solution providers",
+    "OT / ICS Security solution providers",
+    "Zero Trust Platforms solution providers",
+    "Sovereign Cloud Providers solution providers",
+    "Telecom & 5G Security solution providers",
+    "Quantum Security solution providers",
   ];
 
   return (
@@ -83,7 +83,7 @@ export function SponsorsOverviewSection() {
           <div className="flex items-center gap-3 mb-6">
             <Layers className="text-cyan-500" />
             <h3 className="text-2xl font-bold text-gray-900">
-              Sponsor Categories
+              who should sponsor
             </h3>
           </div>
 
@@ -145,8 +145,8 @@ export function SponsorsOverviewSection() {
             whileTap={{ scale: 0.95 }}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/40 transition"
           >
-            <Download size={18} />
-            Download Sponsorship Brochure
+            {/* <Download size={18} /> */}
+             Explore Sponsor Opportunities
           </motion.button>
           </a>
           

@@ -60,7 +60,7 @@ export function SponsorsSection() {
             <h3 className="text-4xl md:text-5xl font-bold leading-tight mb-4 text-gray-900">
               Direct access to{" "}
               <span className="bg-gradient-to-r from-cyan-500 to-blue-500 text-transparent bg-clip-text">
-                budget owners & regulators
+                key decision makers and policy makers
               </span>
             </h3>
 
