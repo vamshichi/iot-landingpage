@@ -114,6 +114,49 @@ export function SponsorsOverviewSection() {
           </motion.div>
         </motion.div>
 
+        {/* 🔥 Sponsor Benefits */}
+<motion.div
+  className="rounded-xl border border-gray-200 p-8 mb-12 bg-white"
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.7 }}
+  viewport={{ once: true }}
+>
+  <div className="flex items-center gap-3 mb-6">
+    <Sparkles className="text-cyan-500" />
+    <h3 className="text-2xl font-bold text-gray-900">
+      Sponsor Benefits
+    </h3>
+  </div>
+
+  <div className="grid md:grid-cols-2 gap-5">
+    {[
+      "Keynote Speaking Slots",
+      "Panel Discussion Slots",
+      "Exciting Fireside Chat Slots",
+      "Hackathons",
+      "Premium Exhibition Booth Space",
+      "Curated One-to-One Meetings",
+      "Executive Lounge for High-Level Government Meetings",
+      "Dedicated On-Site Support",
+      "Premium Branding and Event Coverage",
+      "Executive Luncheons, Gala Dinner and more",
+    ].map((item, i) => (
+      <motion.div
+        key={i}
+        className="flex items-start gap-3 text-gray-700 text-sm"
+        initial={{ opacity: 0, x: -10 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ delay: i * 0.05 }}
+        viewport={{ once: true }}
+      >
+        <div className="w-2 h-2 bg-cyan-500 rounded-full mt-2"></div>
+        <span className="font-medium">{item}</span>
+      </motion.div>
+    ))}
+  </div>
+</motion.div>
+
         {/* 🔥 Sponsorship Packages */}
         <motion.div
           className="rounded-xl border border-gray-200 p-8 text-center bg-gray-50"
