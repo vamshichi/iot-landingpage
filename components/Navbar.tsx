@@ -43,13 +43,13 @@ export function Navbar() {
           {/* Logo */}
           <Link href="#" className="flex items-center">
             <Image
-              src="/iotlogo.png"
-              alt="IoT Summit Logo"
-              width={140}
-              height={40}
-              priority
-              className="object-contain"
-            />
+  src={isScrolled ? "/iotlogo.png" : "/whitelogo.png"}
+  alt="IoT Summit Logo"
+  width={140}
+  height={40}
+  priority
+  className="object-contain transition-all duration-300"
+/>
           </Link>
 
           {/* Desktop Menu */}

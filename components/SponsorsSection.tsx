@@ -8,7 +8,7 @@ export function SponsorsSection() {
   const roiPoints = [
     {
       icon: <Target className="w-5 h-5" />,
-      text: "Direct access to budget owners & regulators",
+      text: "Access to Key Decision Makers & Regulators",
     },
     {
       icon: <TrendingUp className="w-5 h-5" />,
