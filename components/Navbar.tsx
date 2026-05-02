@@ -23,7 +23,7 @@ export function Navbar() {
     { label: "Home", href: "#home" },
     { label: "About", href: "#about" },
     { label: "Agenda", href: "#agenda" },
-    { label: "Speakers", href: "#speakers" },
+    // { label: "Speakers", href: "#speakers" },
     { label: "Industries", href: "#industries" },
     { label: "Sponsors", href: "#sponsors" },
     { label: "Partner With Us", href: "#partner" },

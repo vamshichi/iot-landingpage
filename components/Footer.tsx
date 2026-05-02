@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Mail, Phone, MapPin, Linkedin, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Twitter, Facebook, Instagram } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -51,24 +51,28 @@ export function Footer() {
             </div>
           </div>
 
+         
           {/* Social */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-4">Follow Us</h4>
-            <div className="flex space-x-4">
-              {[
-                { icon: Linkedin, href: '#' },
-                { icon: Twitter, href: '#' },
-              ].map((social, i) => (
-                <a
-                  key={i}
-                  href={social.href}
-                  className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 transition-all"
-                >
-                  <social.icon size={18} />
-                </a>
-              ))}
-            </div>
-          </div>
+<div>
+  <h4 className="font-semibold text-foreground mb-4">Follow Us</h4>
+  <div className="flex space-x-4">
+    {[
+      { icon: Facebook, href: 'https://www.facebook.com/people/ConFex-Meet/61581833408204/' },
+      { icon: Linkedin, href: 'https://www.linkedin.com/company/confex-meet/' },
+      { icon: Instagram, href: 'https://www.instagram.com/confex.meet/' },
+    ].map((social, i) => (
+      <a
+        key={i}
+        href={social.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 transition-all"
+      >
+        <social.icon size={18} />
+      </a>
+    ))}
+  </div>
+</div>
         </div>
 
         <div className="border-t border-cyan-500/20 pt-8">
