@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import { connectDB } from "@/lib/mongodb";
-import { Lead } from "@/models/Lead";
+import { prisma } from "@/lib/prisma";
+import { FormType, LeadStatus, Prisma } from "@prisma/client";
 
 const SECRET      = new TextEncoder().encode(process.env.JWT_SECRET ?? "change-this-to-a-random-32-char-secret!!");
 const COOKIE_NAME = "admin_token";
@@ -12,67 +12,75 @@ async function verifyAdmin(req: NextRequest) {
   try { await jwtVerify(token, SECRET); return true; } catch { return false; }
 }
 
-/* ── GET /api/admin/leads ───────────────────────────────────────────────
-   Query params:
-     page      (default 1)
-     limit     (default 20)
-     formType  delegate | sponsor | brochure | "" (all)
-     status    new | contacted | converted | rejected | "" (all)
-     search    free text
-     sort      submittedAt | fullName  (prefix with - for desc)
-─────────────────────────────────────────────────────────────────────── */
+/* ── GET /api/admin/leads ──────────────────────────────────── */
 export async function GET(req: NextRequest) {
   if (!(await verifyAdmin(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await connectDB();
-
   const { searchParams } = new URL(req.url);
-  const page     = Math.max(1, Number(searchParams.get("page")  ?? 1));
-  const limit    = Math.min(100, Math.max(1, Number(searchParams.get("limit") ?? 20)));
-  const formType = searchParams.get("formType") ?? "";
-  const status   = searchParams.get("status")   ?? "";
-  const search   = searchParams.get("search")   ?? "";
-  const sortParam= searchParams.get("sort")      ?? "-submittedAt";
+  const page      = Math.max(1, Number(searchParams.get("page")  ?? 1));
+  const limit     = Math.min(100, Math.max(1, Number(searchParams.get("limit") ?? 20)));
+  const formType  = searchParams.get("formType") ?? "";
+  const status    = searchParams.get("status")   ?? "";
+  const search    = searchParams.get("search")   ?? "";
+  const sortParam = searchParams.get("sort")     ?? "-submittedAt";
 
-  // Build filter
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const filter: Record<string, any> = {};
-  if (formType) filter.formType = formType;
-  if (status)   filter.status   = status;
-  if (search)   filter.$text    = { $search: search };
+  /* ── Build where clause ── */
+  const where: Prisma.LeadWhereInput = {};
 
-  // Build sort
-  const sortDir  = sortParam.startsWith("-") ? -1 : 1;
-  const sortKey  = sortParam.replace(/^-/, "");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sort: Record<string, any> = { [sortKey]: sortDir };
+  if (formType) where.formType = formType as FormType;
+  if (status)   where.status   = status   as LeadStatus;
 
-  const [leads, total, stats] = await Promise.all([
-    Lead.find(filter)
-        .sort(sort)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean(),
-    Lead.countDocuments(filter),
-    // Always return counts across ALL leads for the stats cards
-    Lead.aggregate([
-      { $group: { _id: { formType: "$formType", status: "$status" }, count: { $sum: 1 } } }
-    ]),
+  // Prisma MongoDB: use OR + contains for basic search
+  // (For production, consider MongoDB Atlas Search via $search)
+  if (search) {
+    where.OR = [
+      { fullName:              { contains: search, mode: "insensitive" } },
+      { workEmailAddress:      { contains: search, mode: "insensitive" } },
+      { mobileNumber:          { contains: search, mode: "insensitive" } },
+      { companyName:           { contains: search, mode: "insensitive" } },
+      { organizationCompanyName:{ contains: search, mode: "insensitive" } },
+      { companyOrganizationName:{ contains: search, mode: "insensitive" } },
+    ];
+  }
+
+  /* ── Build orderBy ── */
+  const isDesc   = sortParam.startsWith("-");
+  const sortKey  = sortParam.replace(/^-/, "") as keyof Prisma.LeadOrderByWithRelationInput;
+  const orderBy  = { [sortKey]: isDesc ? "desc" : "asc" } as Prisma.LeadOrderByWithRelationInput;
+
+  /* ── Run queries in parallel ── */
+  const [leads, total, byTypeRaw, byStatusRaw] = await Promise.all([
+    prisma.lead.findMany({
+      where,
+      orderBy,
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.lead.count({ where }),
+
+    // Stats always across ALL leads (no filter)
+    prisma.lead.groupBy({
+      by: ["formType"],
+      _count: { _all: true },
+    }),
+    prisma.lead.groupBy({
+      by: ["status"],
+      _count: { _all: true },
+    }),
   ]);
 
-  // Shape stats → { total, byType, byStatus }
-  const byType:   Record<string, number> = {};
+  const byType: Record<string, number>   = {};
   const byStatus: Record<string, number> = {};
   let grandTotal = 0;
-  for (const row of stats) {
-    const ft = row._id.formType as string;
-    const st = row._id.status  as string;
-    const n  = row.count       as number;
-    byType[ft]   = (byType[ft]   ?? 0) + n;
-    byStatus[st] = (byStatus[st] ?? 0) + n;
-    grandTotal  += n;
+
+  for (const row of byTypeRaw) {
+    byType[row.formType] = row._count._all;
+    grandTotal += row._count._all;
+  }
+  for (const row of byStatusRaw) {
+    byStatus[row.status] = row._count._all;
   }
 
   return NextResponse.json({
@@ -82,42 +90,54 @@ export async function GET(req: NextRequest) {
   });
 }
 
-/* ── PATCH /api/admin/leads  →  bulk update status / add note ── */
+/* ── PATCH /api/admin/leads  →  update status / notes ─────── */
 export async function PATCH(req: NextRequest) {
   if (!(await verifyAdmin(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { id, status, notes } = (await req.json()) as {
-    id    : string;
+    id     : string;
     status?: string;
     notes ?: string;
   };
 
   if (!id) return NextResponse.json({ error: "Missing id." }, { status: 400 });
 
-  await connectDB();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const update: Record<string, any> = {};
-  if (status) update.status = status;
-  if (notes !== undefined) update.notes = notes;
+  const data: Prisma.LeadUpdateInput = {};
+  if (status)           data.status = status as LeadStatus;
+  if (notes !== undefined) data.notes = notes;
 
-  const lead = await Lead.findByIdAndUpdate(id, update, { new: true }).lean();
-  if (!lead) return NextResponse.json({ error: "Lead not found." }, { status: 404 });
-
-  return NextResponse.json({ success: true, lead });
+  try {
+    const lead = await prisma.lead.update({ where: { id }, data });
+    return NextResponse.json({ success: true, lead });
+  } catch {
+    return NextResponse.json({ error: "Lead not found." }, { status: 404 });
+  }
 }
 
-/* ── DELETE /api/admin/leads  →  delete one lead ── */
+/* ── DELETE /api/admin/leads  →  delete one lead ──────────── */
 export async function DELETE(req: NextRequest) {
   if (!(await verifyAdmin(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = (await req.json()) as { id: string };
-  if (!id) return NextResponse.json({ error: "Missing id." }, { status: 400 });
+  const { id } = await req.json();
 
-  await connectDB();
-  await Lead.findByIdAndDelete(id);
-  return NextResponse.json({ success: true });
+  if (!id) {
+    return NextResponse.json({ error: "Missing id." }, { status: 400 });
+  }
+
+  try {
+    const lead = await prisma.lead.delete({
+      where: {
+        id: id, // keep as string (Prisma handles mapping)
+      },
+    });
+
+    return NextResponse.json({ success: true, lead });
+  } catch (error) {
+    console.error("DELETE ERROR:", error); // 👈 ADD THIS
+    return NextResponse.json({ error: "Lead not found." }, { status: 404 });
+  }
 }

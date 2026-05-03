@@ -1,0 +1,70 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum FormType {
+  delegate
+  sponsor
+  brochure
+}
+
+enum LeadStatus {
+  new
+  contacted
+  converted
+  rejected
+}
+
+model Lead {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  formType    FormType
+  status      LeadStatus @default(new)
+  submittedAt DateTime   @default(now())
+  notes       String     @default("")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // ── Contact (all forms) ──────────────────────────────────
+  fullName           String
+  jobTitle           String
+  workEmailAddress   String
+  mobileNumber       String
+  linkedInProfileUrl String?
+
+  // ── Delegate ─────────────────────────────────────────────
+  organizationCompanyName String?
+  industry                String?
+  keyAreasOfInterest      String[]
+  lookingToAchieve        String[]
+  galaDinner              String[]
+  delegateConsent         String[]
+
+  // ── Sponsor ──────────────────────────────────────────────
+  companyName          String?
+  websiteUrl           String?
+  sponsorIndustry      String?
+  headquartersLocation String?
+  companySize          String?
+  keyObjectives        String[]
+  targetAudience       String[]
+  sponsorshipCategory  String[]
+  addOns               String[]
+  activationPlans      String[]
+  customRequests       String?
+  scheduledMeetings    String[]
+  vipDinner            String[]
+  sponsorConsent       String[]
+
+  // ── Brochure ─────────────────────────────────────────────
+  companyOrganizationName String?
+  brochureIndustry        String?
+  brochureCompanySize     String?
+  countryRegion           String?
+  interestedIn            String[]
+  brochureConsent         String[]
+}

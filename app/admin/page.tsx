@@ -19,7 +19,7 @@ type FormType   = "delegate" | "sponsor" | "brochure";
 type LeadStatus = "new" | "contacted" | "converted" | "rejected";
 
 interface Lead {
-  _id            : string;
+  id            : string;
   formType       : FormType;
   status         : LeadStatus;
   submittedAt    : string;
@@ -221,7 +221,7 @@ function LeadDrawer({
               {(Object.keys(STATUS_META) as LeadStatus[]).map((s) => (
                 <button
                   key={s}
-                  onClick={() => onStatusChange(lead._id, s)}
+                  onClick={() => onStatusChange(lead.id, s)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                     lead.status === s
                       ? STATUS_META[s].color + " ring-1 ring-inset ring-current"
@@ -294,7 +294,7 @@ function LeadDrawer({
               className="w-full bg-[#0a1628]/60 border border-cyan-500/20 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 resize-none transition-all"
             />
             <button
-              onClick={async () => { setSaving(true); await onNotesSave(lead._id, notes); setSaving(false); }}
+              onClick={async () => { setSaving(true); await onNotesSave(lead.id, notes); setSaving(false); }}
               disabled={saving || notes === lead.notes}
               className="mt-2 px-4 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 text-xs font-semibold border border-cyan-500/30 hover:bg-cyan-500/30 disabled:opacity-40 transition-all"
             >
@@ -323,7 +323,7 @@ function LeadDrawer({
             <div className="flex items-center gap-2">
               <span className="text-xs text-red-400">Sure?</span>
               <button
-                onClick={async () => { setDeleting(true); await onDelete(lead._id); }}
+                onClick={async () => { setDeleting(true); await onDelete(lead.id); }}
                 disabled={deleting}
                 className="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 text-xs font-semibold border border-red-500/30 hover:bg-red-500/30 disabled:opacity-50 transition-all"
               >
@@ -428,19 +428,19 @@ const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   /* ── Actions ───────────────────────────────────────────── */
   const handleStatusChange = async (id: string, status: LeadStatus) => {
     await fetch("/api/admin/leads", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, status }) });
-    setLeads(prev => prev.map(l => l._id === id ? { ...l, status } : l));
-    if (selectedLead?._id === id) setSelectedLead(prev => prev ? { ...prev, status } : null);
+    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
+if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, status } : null);
   };
 
   const handleNotesSave = async (id: string, notes: string) => {
     await fetch("/api/admin/leads", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, notes }) });
-    setLeads(prev => prev.map(l => l._id === id ? { ...l, notes } : l));
-    if (selectedLead?._id === id) setSelectedLead(prev => prev ? { ...prev, notes } : null);
+    setLeads(prev => prev.map(l => l.id === id ? { ...l, notes } : l));
+if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, notes } : null);
   };
 
   const handleDelete = async (id: string) => {
     await fetch("/api/admin/leads", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
-    setLeads(prev => prev.filter(l => l._id !== id));
+    setLeads(prev => prev.filter(l => l.id !== id));
     setSelectedLead(null);
     fetchLeads();
   };
@@ -594,7 +594,7 @@ const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
                     const company = lead.organizationCompanyName ?? lead.companyName ?? lead.companyOrganizationName ?? "—";
                     return (
                       <motion.tr
-                        key={lead._id}
+                        key={lead.id}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="border-b border-white/5 hover:bg-white/3 cursor-pointer transition-colors group"
@@ -663,7 +663,7 @@ const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
       <AnimatePresence>
         {selectedLead && (
           <LeadDrawer
-            key={selectedLead._id}
+            key={selectedLead.id}
             lead={selectedLead}
             onClose={() => setSelectedLead(null)}
             onStatusChange={handleStatusChange}
