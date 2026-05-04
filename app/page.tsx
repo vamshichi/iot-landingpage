@@ -15,6 +15,7 @@ import { SessionHighlightsSection } from '@/components/SessionHighlightsSection'
 import { WhoShouldAttendSection } from '@/components/WhoShouldAttendSection';
 import { SponsorsOverviewSection } from '@/components/SponsorsOverviewSection';
 import WhatsAppButton from '@/components/whatsapp';
+import OrganizerBadge from "@/components/OrganizerBadge";
 
 export default function Home() {
   return (
@@ -37,7 +38,9 @@ export default function Home() {
          <SponsorsSection />
         {/* <PartnerSection /> */}
         <ContactSection />
+        {/* <OrganizerBadge /> */}
         <WhatsAppButton />
+        
       </main>
       <Footer />
     </>
