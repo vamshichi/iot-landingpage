@@ -36,8 +36,8 @@ export function Footer() {
             <div className="space-y-3 text-sm text-muted-foreground">
               <div className="flex items-center space-x-2">
                 <Mail size={16} className="text-cyan-400" />
-                <a href="mailto:enquiry@confexmeet.com" className="hover:text-cyan-400 transition-all">
-                  enquiry@confexmeet.com
+                <a href="mailto:info@confexmeet.com" className="hover:text-cyan-400 transition-all">
+                  info@confexmeet.com
                 </a>
               </div>
               <div className="flex items-center space-x-2">

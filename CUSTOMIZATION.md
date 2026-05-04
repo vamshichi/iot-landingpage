@@ -116,7 +116,7 @@ const industries = [
 
 ```tsx
 // Update email
-<a href="mailto:enquiry@confexmeet.com">enquiry@confexmeet.com</a>
+<a href="mailto:info@confexmeet.com">info@confexmeet.com</a>
 
 // Update phone
 <span>+91 7975 429 127</span>

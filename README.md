@@ -77,7 +77,7 @@ SMTP_SECURE=false
 SMTP_USER=your-email@company.com
 SMTP_PASSWORD=your-app-password
 SMTP_FROM_EMAIL="IoT Summit <noreply@iotsummit.ae>"
-CONTACT_EMAIL=enquiry@confexmeet.com
+CONTACT_EMAIL=info@confexmeet.com
 ```
 
 **Popular SMTP Providers:**
@@ -272,7 +272,7 @@ To contribute improvements:
 ## Support
 
 For issues, questions, or feature requests:
-- Email: enquiry@confexmeet.com
+- Email: info@confexmeet.com
 - Phone: +91 7975 429 127
 - Website: https://iotsummit.ae
 
