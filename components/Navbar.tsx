@@ -26,7 +26,7 @@ export function Navbar() {
     // { label: "Speakers", href: "#speakers" },
     { label: "Industries", href: "#industries" },
     { label: "Sponsors", href: "#sponsors" },
-    { label: "Partner With Us", href: "#partner" },
+    // { label: "Partner With Us", href: "#partner" },
   ];
 
   return (
