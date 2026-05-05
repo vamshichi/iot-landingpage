@@ -90,7 +90,7 @@ export function Footer() {
                   alt="ConfexMeet"
                   width={100}
                   height={30}
-                  className="object-contain"
+                  className="object-contain h-16 w-full mt-2"
                 />
                 </div>
               </div>
