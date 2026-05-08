@@ -11,6 +11,7 @@ enum FormType {
   delegate
   sponsor
   brochure
+  nomination 
 }
 
 enum LeadStatus {
@@ -67,4 +68,13 @@ model Lead {
   countryRegion           String?
   interestedIn            String[]
   brochureConsent         String[]
+
+  // ── Nomination ───────────────────────────────────────────
+  nomineeName        String?
+  nomineeTitle       String?
+  nomineeCompany     String?
+  achievementSummary String?
+  innovation         String?
+  impact             String?
+  nominationConsent  String[]
 }

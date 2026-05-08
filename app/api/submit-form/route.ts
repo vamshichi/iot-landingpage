@@ -43,6 +43,7 @@ function clientEmail(name: string, formType: string): string {
     delegate: "Delegate Registration",
     sponsor: "Sponsorship Enquiry",
     brochure: "Brochure Request",
+    nomination: "Award Nomination",
   };
   return `
   <!DOCTYPE html><html lang="en">
@@ -155,6 +156,10 @@ const SUBJECT_MAP: Record<string, { client: string; admin: string }> = {
     client: "Your Brochure Request – IoT Security World Summit Abu Dhabi 2026",
     admin: "🔔 New Brochure Request – IoT Security Summit 2026",
   },
+  nomination: {
+    client: "Your Nomination is Received – IoT Security Leadership Excellence Awards 2026",
+    admin:  "🏆 New Award Nomination – IoT Security Summit 2026",
+  },
 };
 
 /* ─── Field mappers ─────────────────────────────────────────── */
@@ -199,11 +204,25 @@ function mapBrochureFields(data: Record<string, unknown>) {
   };
 }
 
+// Add mapper function (alongside the other mappers)
+function mapNominationFields(data: Record<string, unknown>) {
+  return {
+    nomineeName:       (data.nomineeName        as string) || null,
+    nomineeTitle:      (data.nomineeTitle        as string) || null,
+    nomineeCompany:    (data.nomineeCompany      as string) || null,
+    achievementSummary:(data.achievementSummary  as string) || null,
+    innovation:        (data.innovation          as string) || null,
+    impact:            (data.impact             as string) || null,
+    organizationCompanyName: (data.organizationCompanyName as string) || null,
+    nominationConsent: (data.nominationConsent   as string[]) || [],
+  }
+}
+
 /* ─── Route handler ─────────────────────────────────────────── */
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as {
-      formType: "delegate" | "sponsor" | "brochure";
+      formType: "delegate" | "sponsor" | "brochure" | "nomination";
       data: Record<string, unknown>;
     };
 
@@ -228,10 +247,12 @@ export async function POST(req: NextRequest) {
     };
 
     /* ── 2. Build type-specific fields ── */
-    const specificFields =
-      formType === "delegate" ? mapDelegateFields(data)
-      : formType === "sponsor" ? mapSponsorFields(data)
-      : mapBrochureFields(data);
+    
+const specificFields =
+  formType === "delegate"   ? mapDelegateFields(data)
+  : formType === "sponsor"  ? mapSponsorFields(data)
+  : formType === "brochure" ? mapBrochureFields(data)
+  : mapNominationFields(data)   // ← ADD
 
     /* ── 3. Save to MongoDB via Prisma ── */
     const lead = await prisma.lead.create({

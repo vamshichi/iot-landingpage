@@ -390,3 +390,6 @@
 }
 
 
+html {
+  scroll-behavior: smooth;
+}

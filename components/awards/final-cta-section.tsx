@@ -8,7 +8,10 @@ import {
   Trophy,
 } from 'lucide-react'
 
+import { useFormModal } from "@/components/FormModal"
+
 export function FinalCTASection() {
+  const { openModal } = useFormModal()
   return (
     <section className="relative overflow-hidden bg-[#020617] py-24 md:py-32 px-4">
 
@@ -138,19 +141,20 @@ export function FinalCTASection() {
             >
 
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
+              <a href="#nominate">
               <div className="relative z-10 flex items-center justify-center gap-3">
                 <ShieldCheck className="w-5 h-5" />
                 <span>Submit Nomination</span>
                 <ArrowRight className="w-5 h-5" />
               </div>
-
+              </a>
             </motion.button>
 
             {/* Secondary */}
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
+              onClick={() => openModal("sponsor")}
               className="group rounded-2xl border border-cyan-400/30 bg-white/[0.03] px-8 py-4 text-cyan-400 font-semibold text-lg backdrop-blur-xl transition-all duration-300 hover:border-cyan-400 hover:bg-cyan-500/10 hover:text-white"
             >
 

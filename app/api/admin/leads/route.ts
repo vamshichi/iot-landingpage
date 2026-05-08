@@ -42,6 +42,8 @@ export async function GET(req: NextRequest) {
       { companyName:           { contains: search, mode: "insensitive" } },
       { organizationCompanyName:{ contains: search, mode: "insensitive" } },
       { companyOrganizationName:{ contains: search, mode: "insensitive" } },
+      { nomineeName:    { contains: search, mode: "insensitive" } },
+    { nomineeCompany: { contains: search, mode: "insensitive" } },
     ];
   }
 

@@ -203,12 +203,12 @@ export function MomentOfRecognitionSection() {
           <button className="group relative overflow-hidden rounded-2xl bg-cyan-500 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-cyan-400 hover:shadow-[0_0_35px_rgba(6,182,212,0.45)]">
 
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
+            <a href="#nominate" >
             <div className="relative z-10 flex items-center gap-3">
               <span>Reserve Your Seat</span>
               <ArrowRight className="w-5 h-5" />
             </div>
-
+            </a>
           </button>
         </motion.div>
 

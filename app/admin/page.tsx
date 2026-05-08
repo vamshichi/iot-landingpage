@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { Trophy } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Handshake, FileText, TrendingUp,
@@ -15,56 +16,63 @@ import {
 /* ─────────────────────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────────────────────── */
-type FormType   = "delegate" | "sponsor" | "brochure";
+type FormType = "delegate" | "sponsor" | "brochure" | "nomination";
 type LeadStatus = "new" | "contacted" | "converted" | "rejected";
 
 interface Lead {
-  id            : string;
-  formType       : FormType;
-  status         : LeadStatus;
-  submittedAt    : string;
-  notes          : string;
-  fullName       : string;
-  jobTitle       : string;
+  id: string;
+  formType: FormType;
+  status: LeadStatus;
+  submittedAt: string;
+  notes: string;
+  fullName: string;
+  jobTitle: string;
   workEmailAddress: string;
-  mobileNumber   : string;
+  mobileNumber: string;
   linkedInProfileUrl?: string;
   // delegate
   organizationCompanyName?: string;
-  industry?               : string;
-  keyAreasOfInterest?     : string[];
-  lookingToAchieve?       : string[];
-  galaDinner?             : string[];
+  industry?: string;
+  keyAreasOfInterest?: string[];
+  lookingToAchieve?: string[];
+  galaDinner?: string[];
   // sponsor
-  companyName?            : string;
-  websiteUrl?             : string;
-  sponsorIndustry?        : string;
-  headquartersLocation?   : string;
-  companySize?            : string;
-  keyObjectives?          : string[];
-  targetAudience?         : string[];
-  sponsorshipCategory?    : string[];
-  addOns?                 : string[];
-  activationPlans?        : string[];
-  customRequests?         : string;
-  scheduledMeetings?      : string[];
-  vipDinner?              : string[];
+  companyName?: string;
+  websiteUrl?: string;
+  sponsorIndustry?: string;
+  headquartersLocation?: string;
+  companySize?: string;
+  keyObjectives?: string[];
+  targetAudience?: string[];
+  sponsorshipCategory?: string[];
+  addOns?: string[];
+  activationPlans?: string[];
+  customRequests?: string;
+  scheduledMeetings?: string[];
+  vipDinner?: string[];
   // brochure
   companyOrganizationName?: string;
-  brochureIndustry?       : string;
-  brochureCompanySize?    : string;
-  countryRegion?          : string;
-  interestedIn?           : string[];
+  brochureIndustry?: string;
+  brochureCompanySize?: string;
+  countryRegion?: string;
+  interestedIn?: string[];
+  // nomination
+  nomineeName?: string
+  nomineeTitle?: string
+  nomineeCompany?: string
+  achievementSummary?: string
+  innovation?: string
+  impact?: string
 }
 
 interface Stats {
-  total    : number;
-  byType   : Record<string, number>;
-  byStatus : Record<string, number>;
+  total: number;
+  byType: Record<string, number>;
+  byStatus: Record<string, number>;
 }
 
 interface Pagination {
-  page : number;
+  page: number;
   limit: number;
   total: number;
   pages: number;
@@ -74,16 +82,17 @@ interface Pagination {
    CONSTANTS
 ───────────────────────────────────────────────────────────── */
 const STATUS_META: Record<LeadStatus, { label: string; color: string; dot: string }> = {
-  new       : { label: "New",       color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30",   dot: "bg-cyan-400"  },
-  contacted : { label: "Contacted", color: "text-blue-400 bg-blue-400/10 border-blue-400/30",   dot: "bg-blue-400"  },
-  converted : { label: "Converted", color: "text-green-400 bg-green-400/10 border-green-400/30", dot: "bg-green-400" },
-  rejected  : { label: "Rejected",  color: "text-red-400 bg-red-400/10 border-red-400/30",      dot: "bg-red-400"   },
+  new: { label: "New", color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30", dot: "bg-cyan-400" },
+  contacted: { label: "Contacted", color: "text-blue-400 bg-blue-400/10 border-blue-400/30", dot: "bg-blue-400" },
+  converted: { label: "Converted", color: "text-green-400 bg-green-400/10 border-green-400/30", dot: "bg-green-400" },
+  rejected: { label: "Rejected", color: "text-red-400 bg-red-400/10 border-red-400/30", dot: "bg-red-400" },
 };
 
 const TYPE_META: Record<FormType, { label: string; icon: React.ReactNode; color: string }> = {
-  delegate: { label: "Delegate", icon: <Users size={13} />,    color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30"   },
-  sponsor : { label: "Sponsor",  icon: <Handshake size={13} />, color: "text-purple-400 bg-purple-400/10 border-purple-400/30" },
-  brochure: { label: "Brochure", icon: <FileText size={13} />, color: "text-amber-400 bg-amber-400/10 border-amber-400/30"  },
+  delegate: { label: "Delegate", icon: <Users size={13} />, color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30" },
+  sponsor: { label: "Sponsor", icon: <Handshake size={13} />, color: "text-purple-400 bg-purple-400/10 border-purple-400/30" },
+  brochure: { label: "Brochure", icon: <FileText size={13} />, color: "text-amber-400 bg-amber-400/10 border-amber-400/30" },
+  nomination: { label: "Nomination", icon: <Trophy size={13} />, color: "text-rose-400 bg-rose-400/10 border-rose-400/30" },
 };
 
 /* ─────────────────────────────────────────────────────────────
@@ -125,8 +134,8 @@ function LeadDrawer({
   lead: Lead;
   onClose: () => void;
   onStatusChange: (id: string, status: LeadStatus) => Promise<void>;
-  onNotesSave   : (id: string, notes: string)       => Promise<void>;
-  onDelete      : (id: string)                       => Promise<void>;
+  onNotesSave: (id: string, notes: string) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
 }) {
   const [notes, setNotes] = useState(lead.notes);
   const [saving, setSaving] = useState(false);
@@ -145,31 +154,33 @@ function LeadDrawer({
     lead.industry ?? lead.sponsorIndustry ?? lead.brochureIndustry ?? "—";
 
   const rows: [string, React.ReactNode][] = [
-    ["Email",    <a key="e" href={`mailto:${lead.workEmailAddress}`} className="text-cyan-400 hover:underline">{lead.workEmailAddress}</a>],
-    ["Phone",    lead.mobileNumber],
-    ["Company",  company],
+    ["Email", <a key="e" href={`mailto:${lead.workEmailAddress}`} className="text-cyan-400 hover:underline">{lead.workEmailAddress}</a>],
+    ["Phone", lead.mobileNumber],
+    ["Company", company],
     ["Industry", industry],
   ];
 
   if (lead.linkedInProfileUrl)
     rows.push(["LinkedIn", <a key="li" href={lead.linkedInProfileUrl} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline truncate max-w-[200px] inline-block">{lead.linkedInProfileUrl}</a>]);
-  if (lead.headquartersLocation) rows.push(["Location",   lead.headquartersLocation]);
-  if (lead.websiteUrl)           rows.push(["Website",    <a key="ws" href={lead.websiteUrl} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">{lead.websiteUrl}</a>]);
-  if (lead.countryRegion)        rows.push(["Country",    lead.countryRegion]);
+  if (lead.headquartersLocation) rows.push(["Location", lead.headquartersLocation]);
+  if (lead.websiteUrl) rows.push(["Website", <a key="ws" href={lead.websiteUrl} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">{lead.websiteUrl}</a>]);
+  if (lead.countryRegion) rows.push(["Country", lead.countryRegion]);
   if (lead.companySize ?? lead.brochureCompanySize) rows.push(["Company Size", lead.companySize ?? lead.brochureCompanySize ?? "—"]);
+  if (lead.nomineeName) rows.push(["Nominee", `${lead.nomineeName} · ${lead.nomineeTitle ?? ''}`])
+  if (lead.nomineeCompany) rows.push(["Nominee Company", lead.nomineeCompany])
 
   const chips: [string, string[] | undefined][] = [
-    ["Key Areas",         lead.keyAreasOfInterest],
-    ["Objectives",        lead.lookingToAchieve],
-    ["Gala Dinner",       lead.galaDinner],
+    ["Key Areas", lead.keyAreasOfInterest],
+    ["Objectives", lead.lookingToAchieve],
+    ["Gala Dinner", lead.galaDinner],
     ["Sponsorship Goals", lead.keyObjectives],
-    ["Target Audience",   lead.targetAudience],
-    ["Sponsorship Tier",  lead.sponsorshipCategory],
-    ["Add-ons",           lead.addOns],
-    ["Activation Plans",  lead.activationPlans],
-    ["Interested In",     lead.interestedIn],
-    ["Scheduled Meetings",lead.scheduledMeetings],
-    ["VIP Dinner",        lead.vipDinner],
+    ["Target Audience", lead.targetAudience],
+    ["Sponsorship Tier", lead.sponsorshipCategory],
+    ["Add-ons", lead.addOns],
+    ["Activation Plans", lead.activationPlans],
+    ["Interested In", lead.interestedIn],
+    ["Scheduled Meetings", lead.scheduledMeetings],
+    ["VIP Dinner", lead.vipDinner],
   ].filter(([, v]) => v && v.length > 0) as [string, string[]][];
 
   return (
@@ -222,11 +233,10 @@ function LeadDrawer({
                 <button
                   key={s}
                   onClick={() => onStatusChange(lead.id, s)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                    lead.status === s
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${lead.status === s
                       ? STATUS_META[s].color + " ring-1 ring-inset ring-current"
                       : "text-slate-500 border-slate-700 hover:border-slate-500 bg-white/5"
-                  }`}
+                    }`}
                 >
                   {STATUS_META[s].label}
                 </button>
@@ -253,23 +263,39 @@ function LeadDrawer({
           {chips.length > 0 && (
             <div className="space-y-4">
               {chips.map(([label, items]) => (
-  <div key={label}>
-    <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-wider mb-1.5">
-      {label}
-    </p>
+                <div key={label}>
+                  <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-wider mb-1.5">
+                    {label}
+                  </p>
 
-    <div className="flex flex-wrap gap-1.5">
-      {(items ?? []).map((item) => (
-        <span
-          key={item}
-          className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-slate-300"
-        >
-          {item}
-        </span>
-      ))}
-    </div>
-  </div>
-))}
+                  <div className="flex flex-wrap gap-1.5">
+                    {(items ?? []).map((item) => (
+                      <span
+                        key={item}
+                        className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-slate-300"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Achievement details — shown only for nominations */}
+          {lead.formType === 'nomination' && (
+            <div className="space-y-4">
+              {[
+                { label: 'Achievement Summary', value: lead.achievementSummary },
+                { label: 'Innovation', value: lead.innovation },
+                { label: 'Measurable Impact', value: lead.impact },
+              ].filter(f => f.value).map(({ label, value }) => (
+                <div key={label}>
+                  <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-wider mb-1.5">{label}</p>
+                  <p className="text-sm text-slate-300 bg-white/5 rounded-lg p-3 border border-white/10 leading-relaxed">{value}</p>
+                </div>
+              ))}
             </div>
           )}
 
@@ -345,11 +371,11 @@ function LeadDrawer({
 ───────────────────────────────────────────────────────────── */
 function exportCSV(leads: Lead[]) {
   const cols = [
-    "formType","status","submittedAt","fullName","jobTitle","workEmailAddress","mobileNumber",
-    "organizationCompanyName","companyName","companyOrganizationName","industry","sponsorIndustry",
-    "brochureIndustry","headquartersLocation","countryRegion","companySize","brochureCompanySize",
-    "websiteUrl","linkedInProfileUrl","keyAreasOfInterest","lookingToAchieve","keyObjectives",
-    "targetAudience","sponsorshipCategory","addOns","interestedIn","customRequests","notes",
+    "formType", "status", "submittedAt", "fullName", "jobTitle", "workEmailAddress", "mobileNumber",
+    "organizationCompanyName", "companyName", "companyOrganizationName", "industry", "sponsorIndustry",
+    "brochureIndustry", "headquartersLocation", "countryRegion", "companySize", "brochureCompanySize",
+    "websiteUrl", "linkedInProfileUrl", "keyAreasOfInterest", "lookingToAchieve", "keyObjectives",
+    "targetAudience", "sponsorshipCategory", "addOns", "interestedIn", "customRequests", "notes",
   ];
   const header = cols.join(",");
   const rows = leads.map(l =>
@@ -360,12 +386,12 @@ function exportCSV(leads: Lead[]) {
       return val ?? "";
     }).join(",")
   );
-  const csv  = [header, ...rows].join("\n");
+  const csv = [header, ...rows].join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
-  a.href     = url;
-  a.download = `leads_${new Date().toISOString().slice(0,10)}.csv`;
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `leads_${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -376,32 +402,32 @@ function exportCSV(leads: Lead[]) {
 export default function AdminPage() {
   const router = useRouter();
 
-  const [leads, setLeads]         = useState<Lead[]>([]);
-  const [stats, setStats]         = useState<Stats>({ total: 0, byType: {}, byStatus: {} });
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [stats, setStats] = useState<Stats>({ total: 0, byType: {}, byStatus: {} });
   const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 20, total: 0, pages: 1 });
-  const [loading, setLoading]     = useState(true);
-  const [search, setSearch]       = useState("");
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<FormType | "">("");
   const [filterStatus, setFilterStatus] = useState<LeadStatus | "">("");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [page, setPage]           = useState(1);
-const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [page, setPage] = useState(1);
+  const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* ── Fetch leads ───────────────────────────────────────── */
   const fetchLeads = useCallback(async (opts?: { p?: number; q?: string }) => {
     setLoading(true);
     try {
-      const p  = opts?.p ?? page;
-      const q  = opts?.q ?? search;
+      const p = opts?.p ?? page;
+      const q = opts?.q ?? search;
       const params = new URLSearchParams({
-        page    : String(p),
-        limit   : "20",
+        page: String(p),
+        limit: "20",
         formType: filterType,
-        status  : filterStatus,
-        search  : q,
-        sort    : "-submittedAt",
+        status: filterStatus,
+        search: q,
+        sort: "-submittedAt",
       });
-      const res  = await fetch(`/api/admin/leads?${params}`);
+      const res = await fetch(`/api/admin/leads?${params}`);
       if (res.status === 401) { router.push("/admin/login"); return; }
       const json = await res.json();
       setLeads(json.leads ?? []);
@@ -420,8 +446,8 @@ const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleSearch = (q: string) => {
     setSearch(q);
     if (searchRef.current) {
-  clearTimeout(searchRef.current);
-}
+      clearTimeout(searchRef.current);
+    }
     searchRef.current = setTimeout(() => { setPage(1); fetchLeads({ p: 1, q }); }, 500);
   };
 
@@ -429,13 +455,13 @@ const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleStatusChange = async (id: string, status: LeadStatus) => {
     await fetch("/api/admin/leads", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, status }) });
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, status } : null);
+    if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, status } : null);
   };
 
   const handleNotesSave = async (id: string, notes: string) => {
     await fetch("/api/admin/leads", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, notes }) });
     setLeads(prev => prev.map(l => l.id === id ? { ...l, notes } : l));
-if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, notes } : null);
+    if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, notes } : null);
   };
 
   const handleDelete = async (id: string) => {
@@ -490,11 +516,17 @@ if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, notes } :
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 relative z-10">
 
         {/* ── STATS ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <StatCard icon={<TrendingUp size={20} className="text-cyan-400" />} label="Total Leads" value={stats.total} color="bg-cyan-400/10" />
-          <StatCard icon={<Users size={20} className="text-cyan-400" />}      label="Delegates"   value={stats.byType.delegate ?? 0} sub={`${stats.byStatus.new ?? 0} new`} color="bg-cyan-400/10" />
-          <StatCard icon={<Handshake size={20} className="text-purple-400" />} label="Sponsors"   value={stats.byType.sponsor ?? 0}  sub={`${stats.byStatus.converted ?? 0} converted`} color="bg-purple-400/10" />
-          <StatCard icon={<FileText size={20} className="text-amber-400" />}  label="Brochures"   value={stats.byType.brochure ?? 0} color="bg-amber-400/10" />
+          <StatCard icon={<Users size={20} className="text-cyan-400" />} label="Delegates" value={stats.byType.delegate ?? 0} sub={`${stats.byStatus.new ?? 0} new`} color="bg-cyan-400/10" />
+          <StatCard icon={<Handshake size={20} className="text-purple-400" />} label="Sponsors" value={stats.byType.sponsor ?? 0} sub={`${stats.byStatus.converted ?? 0} converted`} color="bg-purple-400/10" />
+          <StatCard icon={<FileText size={20} className="text-amber-400" />} label="Brochures" value={stats.byType.brochure ?? 0} color="bg-amber-400/10" />
+          <StatCard
+            icon={<Trophy size={20} className="text-rose-400" />}
+            label="Nominations"
+            value={stats.byType.nomination ?? 0}
+            color="bg-rose-400/10"
+          />
         </div>
 
         {/* ── FILTERS ── */}
@@ -523,6 +555,7 @@ if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, notes } :
                 <option value="delegate">Delegate</option>
                 <option value="sponsor">Sponsor</option>
                 <option value="brochure">Brochure</option>
+                <option value="nomination">Nomination</option>
               </select>
               <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
             </div>

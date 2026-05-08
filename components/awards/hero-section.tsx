@@ -1,14 +1,34 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
+// import { ChevronDown } from 'lucide-react'
 import { CalendarDays, MapPin } from 'lucide-react'
 
 export function HeroSection() {
   return (
-<section className="relative min-h-screen w-full overflow-hidden pt-24 md:pt-28 lg:pt-32 bg-gradient-to-b from-background via-background to-secondary-background">
-        <div className="cyber-grid absolute inset-0 opacity-20" />
-      
+    <section className="relative min-h-screen w-full overflow-hidden pt-24 md:pt-28 lg:pt-32 bg-black">
+      {/* Background Video */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
+
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/awards/awards.mp4" type="video/mp4" />
+        </video>
+
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/70" />
+
+        {/* Premium Blue Glow */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/20" />
+
+      </div>
+      <div className="cyber-grid absolute inset-0 opacity-20" />
+
       {/* Animated particles background */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(20)].map((_, i) => (
@@ -81,55 +101,42 @@ export function HeroSection() {
 
           {/* Date and Location */}
           <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8, delay: 0.5 }}
-  className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12 text-foreground/70"
->
-  <div className="flex items-center gap-2">
-    <CalendarDays className="w-5 h-5 text-primary" />
-    <span className="text-lg font-medium">23rd July 2026</span>
-  </div>
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12 text-foreground/70"
+          >
+            <div className="flex items-center gap-2">
+              <CalendarDays className="w-5 h-5 text-primary" />
+              <span className="text-lg font-medium">23rd July 2026</span>
+            </div>
 
-  <div className="hidden sm:block w-px h-6 bg-primary/30" />
+            <div className="hidden sm:block w-px h-6 bg-primary/30" />
 
-  <div className="flex items-center gap-2">
-    <MapPin className="w-5 h-5 text-primary" />
-    <span className="text-lg font-medium">Abu Dhabi</span>
-  </div>
-</motion.div>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-primary" />
+              <span className="text-lg font-medium">Abu Dhabi</span>
+            </div>
+          </motion.div>
 
           {/* CTA Buttons */}
+          
           <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8, delay: 0.6 }}
-  className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
->
-  <button className="px-6 py-2 rounded-xl bg-cyan-500 text-white font-semibold text-lg hover:bg-cyan-600 hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 transform hover:scale-105">
-    Nominate Now
-  </button>
-
-  {/* <button className="px-6 py-2 rounded-xl border border-cyan-500 text-cyan-400 font-semibold text-lg hover:bg-cyan-500 hover:text-white transition-all duration-300 backdrop-blur-sm">
-    Download Brochure
-  </button> */}
-</motion.div>
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+          >
+            <a href="#nominate">
+              <button className="px-6 py-2 rounded-xl bg-cyan-500 text-white font-semibold text-lg hover:bg-cyan-600 hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 transform hover:scale-105">
+                Nominate Now
+              </button>
+            </a>
+          </motion.div>
+          
         </motion.div>
 
-        {/* Scroll indicator */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="absolute bottom-8"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <ChevronDown className="w-6 h-6 text-primary/60" />
-          </motion.div>
-        </motion.div> */}
+
       </div>
     </section>
   )
