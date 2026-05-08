@@ -5,16 +5,13 @@ import { AwardCategoriesSection } from '@/components/awards/categories-section'
 import { MomentOfRecognitionSection } from '@/components/awards/moment-section'
 import { NominationFormSection } from '@/components/awards/nomination-form'
 import { FinalCTASection } from '@/components/awards/final-cta-section'
-import { Nav } from 'react-day-picker'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
-// import { Footer } from '@/components/awards/footer'
-
 
 export default function Home() {
   return (
     <main className="w-full overflow-hidden">
-        <Navbar />
+      <Navbar />
       <HeroSection />
       <WhyMattersSection />
       <WhoShouldNominateSection />

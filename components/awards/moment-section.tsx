@@ -1,39 +1,74 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import {
+  Globe,
+  Landmark,
+  ShieldCheck,
+  BriefcaseBusiness,
+  ArrowRight,
+  Sparkles,
+} from 'lucide-react'
 
 interface Stat {
   label: string
   value: number
   suffix: string
+  icon: any
 }
 
 const stats: Stat[] = [
-  { label: 'Global Leaders', value: 500, suffix: '+' },
-  { label: 'Government Delegates', value: 200, suffix: '+' },
-  { label: 'Cybersecurity Executives', value: 800, suffix: '+' },
-  { label: 'Enterprise Decision Makers', value: 1000, suffix: '+' },
+  {
+    label: 'Global Leaders',
+    value: 500,
+    suffix: '+',
+    icon: Globe,
+  },
+  {
+    label: 'Government Delegates',
+    value: 200,
+    suffix: '+',
+    icon: Landmark,
+  },
+  {
+    label: 'Cybersecurity Executives',
+    value: 800,
+    suffix: '+',
+    icon: ShieldCheck,
+  },
+  {
+    label: 'Enterprise Decision Makers',
+    value: 1000,
+    suffix: '+',
+    icon: BriefcaseBusiness,
+  },
 ]
 
-function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
+function AnimatedCounter({
+  value,
+  suffix,
+}: {
+  value: number
+  suffix: string
+}) {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
     let start = 0
-    const end = value
     const duration = 2000
-    const increment = end / (duration / 50)
+    const increment = value / (duration / 30)
 
     const timer = setInterval(() => {
       start += increment
-      if (start >= end) {
-        setCount(end)
+
+      if (start >= value) {
+        setCount(value)
         clearInterval(timer)
       } else {
         setCount(Math.floor(start))
       }
-    }, 50)
+    }, 30)
 
     return () => clearInterval(timer)
   }, [value])
@@ -47,104 +82,136 @@ function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export function MomentOfRecognitionSection() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: 'easeOut',
-      },
-    },
-  }
-
   return (
-    <section className="relative w-full py-20 md:py-32 px-4 md:px-8 bg-background overflow-hidden">
-      {/* Cinematic background */}
-      <div className="absolute inset-0">
-        {/* Radial gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-background to-primary/10" />
-        
-        {/* Animated light rays */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
+    <section className="relative overflow-hidden bg-[#020617] py-20 md:py-32 px-4 md:px-8">
+
+      {/* Background Effects */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full" />
+
+      {/* Cyber Grid */}
+      <div className="absolute inset-0 cyber-grid opacity-10" />
+
+      {/* Radial Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(6,182,212,0.12),transparent_50%)]" />
+
+      <div className="relative z-10 max-w-7xl mx-auto">
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true }}
+          className="text-center mb-16 md:mb-24"
+        >
+
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-md mb-6">
+            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <span className="text-cyan-400 text-sm font-medium uppercase tracking-wider">
+              Global Recognition
+            </span>
+          </div>
+
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-5xl mx-auto">
+            The Ultimate
+            <span className="block mt-2 bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">
+              Moment Of Recognition
+            </span>
+          </h2>
+
+          <p className="mt-8 text-base sm:text-lg md:text-xl text-white/60 max-w-4xl mx-auto leading-relaxed">
+            The IoT Security Leadership Excellence Awards 2026 will be presented
+            live on stage before an elite gathering of global cybersecurity
+            leaders, government authorities, CIOs, CISOs, infrastructure
+            operators, and enterprise decision-makers.
+          </p>
+        </motion.div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
+
+          {stats.map((stat, index) => {
+            const Icon = stat.icon
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.08,
+                }}
+                viewport={{ once: true }}
+                whileHover={{ y: -10 }}
+                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-8 transition-all duration-500 hover:border-cyan-400/40 hover:bg-white/[0.06] hover:shadow-[0_0_40px_rgba(6,182,212,0.15)]"
+              >
+
+                {/* Hover Glow */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10" />
+
+                {/* Animated Border */}
+                <div className="absolute top-0 left-0 h-[2px] w-0 bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-500 group-hover:w-full" />
+
+                {/* Icon */}
+                <div className="relative z-10 mb-6">
+                  <div className="flex items-center justify-center w-16 h-16 rounded-2xl border border-cyan-400/20 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="w-8 h-8 text-cyan-400" />
+                  </div>
+                </div>
+
+                {/* Counter */}
+                <div className="relative z-10">
+                  <h3 className="text-5xl font-bold text-white mb-3">
+                    <AnimatedCounter
+                      value={stat.value}
+                      suffix={stat.suffix}
+                    />
+                  </h3>
+
+                  <p className="text-white/60 text-lg leading-relaxed group-hover:text-white/80 transition-colors duration-300">
+                    {stat.label}
+                  </p>
+                </div>
+
+                {/* Hover Action */}
+                <div className="relative z-10 mt-6 flex items-center gap-2 text-cyan-400 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <span>Global Participation</span>
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+
+              </motion.div>
+            )
+          })}
         </div>
 
-        {/* Corner glows */}
-        <div className="absolute top-20 right-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-20 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 max-w-6xl mx-auto">
-        {/* Section Header */}
+        {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
           viewport={{ once: true }}
-          className="text-center mb-16 md:mb-20"
+          className="mt-20 text-center"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
-            The Moment of Recognition
-          </h2>
-          <p className="text-lg md:text-xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
-            The IOT Security Leadership Excellence Awards 2026 will be presented live on stage before an elite audience of government officials, CISOs, CIOs, regulators, cybersecurity leaders, and enterprise decision-makers.
-          </p>
-        </motion.div>
 
-        {/* Stats Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
-        >
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-            //   variants={itemVariants}
-              className="group glow-border glass-effect p-8 rounded-lg text-center cursor-pointer transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,217,255,0.4)] hover:-translate-y-2"
-            >
-              <div className="mb-4 inline-block p-3 rounded-lg bg-primary/20 group-hover:bg-primary/30 transition-colors">
-                <div className="text-3xl md:text-4xl font-bold text-primary">
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                </div>
-              </div>
-              <p className="text-foreground/70 font-semibold">
-                {stat.label}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="text-center"
-        >
-          <p className="text-foreground/60 text-lg mb-8">
-            Be part of this prestigious gathering of security leaders
+          <p className="text-white/60 text-lg mb-8 max-w-2xl mx-auto">
+            Join the region’s most prestigious gathering of cybersecurity,
+            infrastructure, and digital transformation leaders.
           </p>
-          <button className="px-8 py-4 rounded-lg bg-gradient-to-r from-primary to-secondary text-background font-semibold text-lg hover:shadow-[0_0_30px_rgba(0,217,255,0.5)] transition-all duration-300 transform hover:scale-105">
-            Reserve Your Seat
+
+          <button className="group relative overflow-hidden rounded-2xl bg-cyan-500 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-cyan-400 hover:shadow-[0_0_35px_rgba(6,182,212,0.45)]">
+
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            <div className="relative z-10 flex items-center gap-3">
+              <span>Reserve Your Seat</span>
+              <ArrowRight className="w-5 h-5" />
+            </div>
+
           </button>
         </motion.div>
+
       </div>
     </section>
   )

@@ -2,12 +2,12 @@
 
 import { motion } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
+import { CalendarDays, MapPin } from 'lucide-react'
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-gradient-to-b from-background via-background to-secondary-background">
-      {/* Cybersecurity grid overlay */}
-      <div className="cyber-grid absolute inset-0 opacity-20" />
+<section className="relative min-h-screen w-full overflow-hidden pt-24 md:pt-28 lg:pt-32 bg-gradient-to-b from-background via-background to-secondary-background">
+        <div className="cyber-grid absolute inset-0 opacity-20" />
       
       {/* Animated particles background */}
       <div className="absolute inset-0 overflow-hidden">
@@ -61,7 +61,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-5xl md:text-7xl font-bold mb-6 text-foreground leading-tight tracking-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-foreground leading-tight tracking-tight"
           >
             IOT Security Leadership
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mt-2">
@@ -81,34 +81,43 @@ export function HeroSection() {
 
           {/* Date and Location */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12 text-foreground/70"
-          >
-            <span className="text-lg">📅 23rd July 2026</span>
-            <div className="hidden sm:block w-px h-6 bg-primary/30" />
-            <span className="text-lg">📍 Abu Dhabi</span>
-          </motion.div>
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.5 }}
+  className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12 text-foreground/70"
+>
+  <div className="flex items-center gap-2">
+    <CalendarDays className="w-5 h-5 text-primary" />
+    <span className="text-lg font-medium">23rd July 2026</span>
+  </div>
+
+  <div className="hidden sm:block w-px h-6 bg-primary/30" />
+
+  <div className="flex items-center gap-2">
+    <MapPin className="w-5 h-5 text-primary" />
+    <span className="text-lg font-medium">Abu Dhabi</span>
+  </div>
+</motion.div>
 
           {/* CTA Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
-          >
-            <button className="px-8 py-4 rounded-lg bg-gradient-to-r from-primary to-secondary text-background font-semibold text-lg hover:shadow-[0_0_30px_rgba(0,217,255,0.5)] transition-all duration-300 transform hover:scale-105">
-              Nominate Now
-            </button>
-            <button className="px-8 py-4 rounded-lg border border-primary/50 text-primary font-semibold text-lg hover:bg-primary/10 transition-all duration-300 backdrop-blur-sm">
-              Download Brochure
-            </button>
-          </motion.div>
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.6 }}
+  className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+>
+  <button className="px-6 py-2 rounded-xl bg-cyan-500 text-white font-semibold text-lg hover:bg-cyan-600 hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 transform hover:scale-105">
+    Nominate Now
+  </button>
+
+  {/* <button className="px-6 py-2 rounded-xl border border-cyan-500 text-cyan-400 font-semibold text-lg hover:bg-cyan-500 hover:text-white transition-all duration-300 backdrop-blur-sm">
+    Download Brochure
+  </button> */}
+</motion.div>
         </motion.div>
 
         {/* Scroll indicator */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
@@ -120,7 +129,7 @@ export function HeroSection() {
           >
             <ChevronDown className="w-6 h-6 text-primary/60" />
           </motion.div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   )
