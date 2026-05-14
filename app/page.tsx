@@ -36,7 +36,7 @@ export default function Home() {
         <WhoShouldAttendSection />
         <SponsorsOverviewSection />
          <SponsorsSection />
-        {/* <PartnerSection /> */}
+        <PartnerSection />
         <ContactSection />
         {/* <OrganizerBadge /> */}
         <WhatsAppButton />

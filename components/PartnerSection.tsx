@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { Megaphone, Users, Building2, ArrowRight } from "lucide-react";
+import { Megaphone, Users, Building2 } from "lucide-react";
 
 export function PartnerSection() {
   const partners = [
@@ -21,28 +22,31 @@ export function PartnerSection() {
   ];
 
   return (
-    <section id="partner" className="py-24 bg-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section
+      id="partner"
+      className="py-24 bg-gradient-to-b from-white to-cyan-50"
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 
-        {/* 🔥 Header */}
-        <motion.div
+        {/* Header */}
+        {/* <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <p className="text-cyan-500 font-semibold tracking-widest uppercase mb-4">
+          <p className="text-cyan-500 font-semibold tracking-[0.3em] uppercase mb-4">
             Partner With Us
           </p>
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 leading-tight text-gray-900">
+          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-gray-900">
             PARTNER WITH US
           </h2>
-        </motion.div>
+        </motion.div> */}
 
-        {/* 🔥 Partner Types */}
-        <motion.div
-          className="space-y-4 mb-12"
+        {/* Partner Types */}
+        {/* <motion.div
+          className="space-y-5 mb-20"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -63,41 +67,84 @@ export function PartnerSection() {
                   visible: { opacity: 1, x: 0 },
                 }}
                 whileHover={{ y: -5, scale: 1.02 }}
-                className="p-6 rounded-xl border border-gray-200 bg-gray-50 hover:shadow-md transition flex items-center gap-4 text-left"
+                className="
+                  p-6
+                  rounded-2xl
+                  border
+                  border-cyan-100
+                  bg-white/80
+                  backdrop-blur
+                  hover:shadow-xl
+                  hover:shadow-cyan-100
+                  transition
+                  flex
+                  items-center
+                  gap-4
+                  text-left
+                "
               >
                 <motion.div
-                  className="p-3 rounded-lg bg-cyan-100"
+                  className="p-3 rounded-xl bg-cyan-100"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                 >
                   <Icon className="text-cyan-600" size={22} />
                 </motion.div>
 
-                <p className="text-gray-700 text-sm font-medium">
+                <p className="text-gray-700 text-sm md:text-base font-medium">
                   {item.text}
                 </p>
               </motion.div>
             );
           })}
-        </motion.div>
+        </motion.div> */}
 
-        {/* 🔥 CTA */}
-        {/* <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0, y: 20 }}
+        {/* Media Partner Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ duration: 0.7 }}
           viewport={{ once: true }}
-          className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/40 transition"
+          className="
+            bg-white
+            border
+            border-cyan-100
+            rounded-3xl
+            p-8
+            md:p-12
+            shadow-lg
+          "
         >
-          Partner with us
-          <motion.span
-            whileHover={{ x: 5 }}
+          <p className="text-cyan-500 font-semibold tracking-[0.25em] uppercase mb-3">
+            Official Media Partner
+          </p>
+
+          <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+            Our Media Partner for IoT Security World Summit 2026
+          </h3>
+
+          <motion.div
+            whileHover={{ scale: 1.03 }}
             transition={{ type: "spring", stiffness: 200 }}
+            className="
+              flex
+              justify-center
+              items-center
+              bg-gray-50
+              rounded-2xl
+              p-8
+              border
+              border-gray-100
+            "
           >
-            <ArrowRight size={18} />
-          </motion.span>
-        </motion.button> */}
+            <Image
+              src="/partners/timestech.png"
+              alt="TIMESTech Media Partner"
+              width={320}
+              height={120}
+              className="object-contain"
+            />
+          </motion.div>
+        </motion.div>
 
       </div>
     </section>

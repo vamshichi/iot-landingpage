@@ -24,6 +24,7 @@ export function Navbar() {
     { label: "About", href: "#about" },
     { label: "Agenda", href: "#agenda" },
     { label: "Awards", href: "/awards" },
+    { label: "Partners", href: "#partner" },
     { label: "Industries", href: "#industries" },
     { label: "Sponsors", href: "#sponsors" },
   ];
