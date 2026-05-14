@@ -19,15 +19,15 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = [
-    { label: "Home", href: "#home" },
-    { label: "About", href: "#about" },
-    { label: "Agenda", href: "#agenda" },
-    { label: "Awards", href: "/awards" },
-    { label: "Partners", href: "#partner" },
-    { label: "Industries", href: "#industries" },
-    { label: "Sponsors", href: "#sponsors" },
-  ];
+ const navItems = [
+  { label: "Home", href: "/#home" },
+  { label: "About", href: "/#about" },
+  { label: "Agenda", href: "/#agenda" },
+  { label: "Awards", href: "/awards" },
+  { label: "Partners", href: "/#partner" },
+  { label: "Industries", href: "/#industries" },
+  { label: "Sponsors", href: "/#sponsors" },
+];
 
   return (
     <nav

@@ -134,7 +134,7 @@ export function Footer() {
             <div className="flex space-x-4">
 
               <a
-                href="https://www.facebook.com/people/ConFex-Meet/61581833408204/"
+                href="https://www.facebook.com/IoTSecurityWorldSummitAwards"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 hover:scale-110 transition-all duration-300"
@@ -143,7 +143,7 @@ export function Footer() {
               </a>
 
               <a
-                href="https://www.linkedin.com/company/confex-meet/"
+                href="https://www.linkedin.com/company/iot-security-world-summit-awards/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 hover:scale-110 transition-all duration-300"
@@ -152,7 +152,7 @@ export function Footer() {
               </a>
 
               <a
-                href="https://www.instagram.com/confex.meet/"
+                href="https://www.instagram.com/iot_security_world_summit/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 hover:scale-110 transition-all duration-300"
