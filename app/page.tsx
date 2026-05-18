@@ -32,7 +32,7 @@ export default function Home() {
         
         <AgendaSection />
         <SessionHighlightsSection />
-        {/* <SpeakersSection /> */}
+        <SpeakersSection />
         <WhoShouldAttendSection />
         <SponsorsOverviewSection />
          <SponsorsSection />
