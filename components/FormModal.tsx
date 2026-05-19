@@ -25,10 +25,49 @@ export function useFormModal() {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   BUSINESS EMAIL VALIDATION
+───────────────────────────────────────────────────────────── */
+const FREE_EMAIL_DOMAINS = new Set([
+  "gmail.com","googlemail.com","yahoo.com","yahoo.co.uk","yahoo.co.in","yahoo.fr",
+  "yahoo.de","yahoo.es","yahoo.it","yahoo.ca","yahoo.com.au","yahoo.com.br",
+  "hotmail.com","hotmail.co.uk","hotmail.fr","hotmail.de","hotmail.es","hotmail.it",
+  "outlook.com","outlook.co.uk","live.com","live.co.uk","live.fr","live.de",
+  "msn.com","icloud.com","me.com","mac.com","aol.com","aim.com",
+  "protonmail.com","protonmail.ch","pm.me","tutanota.com","tutanota.de",
+  "zoho.com","mail.com","email.com","fastmail.com","fastmail.fm",
+  "yandex.com","yandex.ru","inbox.com","gmx.com","gmx.net","gmx.de",
+  "rediffmail.com","rocketmail.com","ymail.com","hushmail.com",
+  "guerrillamail.com","tempmail.com","mailinator.com","sharklasers.com",
+  "dispostable.com","throwam.com","trashmail.com",
+]);
+
+/**
+ * Returns an error message string if the email is not a business email,
+ * or null if it's valid.
+ */
+function validateBusinessEmail(email: string): string | null {
+  const trimmed = email.trim().toLowerCase();
+  if (!trimmed) return null; // let `required` handle the empty case
+
+  const atIdx = trimmed.lastIndexOf("@");
+  if (atIdx < 1) return "Please enter a valid email address.";
+
+  const domain = trimmed.slice(atIdx + 1);
+  if (FREE_EMAIL_DOMAINS.has(domain)) {
+    return "Please use a business / work email address (e.g. yourname@company.com).";
+  }
+
+  return null;
+}
+
+/* ─────────────────────────────────────────────────────────────
    SHARED UI HELPERS
 ───────────────────────────────────────────────────────────── */
 const inputCls =
   "w-full bg-[#0a1628]/60 border border-cyan-500/30 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/40 transition-all";
+
+const inputErrCls =
+  "w-full bg-[#0a1628]/60 border border-red-500/60 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400/40 transition-all";
 
 const labelCls =
   "block text-xs font-semibold text-cyan-300/80 uppercase tracking-wider mb-1.5";
@@ -36,10 +75,12 @@ const labelCls =
 function Field({
   label,
   required,
+  error,
   children,
 }: {
   label: string;
   required?: boolean;
+  error?: string | null;
   children: React.ReactNode;
 }) {
   return (
@@ -49,6 +90,12 @@ function Field({
         {required && <span className="text-cyan-400 ml-0.5">*</span>}
       </label>
       {children}
+      {error && (
+        <p className="mt-1.5 flex items-start gap-1.5 text-xs text-red-400">
+          <AlertCircle size={12} className="shrink-0 mt-0.5" />
+          {error}
+        </p>
+      )}
     </div>
   );
 }
@@ -59,12 +106,14 @@ function TextInput({
   name,
   value,
   onChange,
+  hasError,
 }: {
   placeholder?: string;
   type?: string;
   name: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  hasError?: boolean;
 }) {
   return (
     <input
@@ -73,7 +122,7 @@ function TextInput({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={inputCls}
+      className={hasError ? inputErrCls : inputCls}
     />
   );
 }
@@ -245,22 +294,30 @@ function DelegateForm() {
   const [checks, setChecks] = useState<Record<string, string[]>>({
     keyAreasOfInterest: [], lookingToAchieve: [], galaDinner: [], consent: [],
   });
+  const [emailError, setEmailError] = useState<string | null>(null);
 
-  const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-    setFields((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFields((p) => ({ ...p, [name]: value }));
+    if (name === "workEmailAddress") {
+      setEmailError(validateBusinessEmail(value));
+    }
+  };
+
   const setCheck = (name: string, val: string[]) =>
     setChecks((p) => ({ ...p, [name]: val }));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const err = validateBusinessEmail(fields.workEmailAddress);
+    if (err) { setEmailError(err); return; }
+    submit({ ...fields, ...checks });
+  };
 
   if (status === "success") return <SuccessBanner />;
 
   return (
-    <form
-      className="space-y-6"
-      onSubmit={(e) => {
-        e.preventDefault();
-        submit({ ...fields, ...checks });
-      }}
-    >
+    <form className="space-y-6" onSubmit={handleSubmit}>
       {status === "error" && <ErrorBanner message={errorMsg} />}
 
       <SectionTitle>Personal Information</SectionTitle>
@@ -280,8 +337,13 @@ function DelegateForm() {
             options={["BFSI","Government","Telecom","Healthcare","Manufacturing","Energy","Retail","Smart Cities","Others"]}
           />
         </Field>
-        <Field label="Work Email Address" required>
-          <TextInput name="workEmailAddress" type="email" value={fields.workEmailAddress} onChange={set} placeholder="jane@acme.com" />
+        <Field label="Work Email Address" required error={emailError}>
+          <TextInput
+            name="workEmailAddress" type="email"
+            value={fields.workEmailAddress} onChange={set}
+            placeholder="jane@acme.com"
+            hasError={!!emailError}
+          />
         </Field>
         <Field label="Mobile Number (with country code)" required>
           <TextInput name="mobileNumber" value={fields.mobileNumber} onChange={set} placeholder="+971 50 000 0000" />
@@ -329,16 +391,30 @@ function SponsorForm() {
     keyObjectives: [], targetAudience: [], sponsorshipCategory: [],
     addOns: [], activationPlans: [], scheduledMeetings: [], vipDinner: [], consent: [],
   });
+  const [emailError, setEmailError] = useState<string | null>(null);
 
-  const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-    setFields((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFields((p) => ({ ...p, [name]: value }));
+    if (name === "workEmailAddress") {
+      setEmailError(validateBusinessEmail(value));
+    }
+  };
+
   const setCheck = (name: string, val: string[]) =>
     setChecks((p) => ({ ...p, [name]: val }));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const err = validateBusinessEmail(fields.workEmailAddress);
+    if (err) { setEmailError(err); return; }
+    submit({ ...fields, ...checks });
+  };
 
   if (status === "success") return <SuccessBanner />;
 
   return (
-    <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); submit({ ...fields, ...checks }); }}>
+    <form className="space-y-6" onSubmit={handleSubmit}>
       {status === "error" && <ErrorBanner message={errorMsg} />}
 
       <SectionTitle>Company Information</SectionTitle>
@@ -370,8 +446,13 @@ function SponsorForm() {
         <Field label="Job Title" required>
           <TextInput name="jobTitle" value={fields.jobTitle} onChange={set} placeholder="VP Partnerships" />
         </Field>
-        <Field label="Work Email Address" required>
-          <TextInput name="workEmailAddress" type="email" value={fields.workEmailAddress} onChange={set} placeholder="john@techsecure.com" />
+        <Field label="Work Email Address" required error={emailError}>
+          <TextInput
+            name="workEmailAddress" type="email"
+            value={fields.workEmailAddress} onChange={set}
+            placeholder="john@techsecure.com"
+            hasError={!!emailError}
+          />
         </Field>
         <Field label="Mobile Number (with country code)" required>
           <TextInput name="mobileNumber" value={fields.mobileNumber} onChange={set} placeholder="+971 50 000 0000" />
@@ -445,16 +526,30 @@ function BrochureForm() {
   const [checks, setChecks] = useState<Record<string, string[]>>({
     interestedIn: [], consent: [],
   });
+  const [emailError, setEmailError] = useState<string | null>(null);
 
-  const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-    setFields((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFields((p) => ({ ...p, [name]: value }));
+    if (name === "workEmailAddress") {
+      setEmailError(validateBusinessEmail(value));
+    }
+  };
+
   const setCheck = (name: string, val: string[]) =>
     setChecks((p) => ({ ...p, [name]: val }));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const err = validateBusinessEmail(fields.workEmailAddress);
+    if (err) { setEmailError(err); return; }
+    submit({ ...fields, ...checks });
+  };
 
   if (status === "success") return <SuccessBanner />;
 
   return (
-    <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); submit({ ...fields, ...checks }); }}>
+    <form className="space-y-6" onSubmit={handleSubmit}>
       {status === "error" && <ErrorBanner message={errorMsg} />}
 
       <SectionTitle>Basic Information</SectionTitle>
@@ -468,8 +563,13 @@ function BrochureForm() {
         <Field label="Company / Organization Name" required>
           <TextInput name="companyOrganizationName" value={fields.companyOrganizationName} onChange={set} placeholder="Gulf Cyber Inc" />
         </Field>
-        <Field label="Work Email Address" required>
-          <TextInput name="workEmailAddress" type="email" value={fields.workEmailAddress} onChange={set} placeholder="alex@gulfcyber.com" />
+        <Field label="Work Email Address" required error={emailError}>
+          <TextInput
+            name="workEmailAddress" type="email"
+            value={fields.workEmailAddress} onChange={set}
+            placeholder="alex@gulfcyber.com"
+            hasError={!!emailError}
+          />
         </Field>
         <Field label="Mobile Number (with country code)" required>
           <TextInput name="mobileNumber" value={fields.mobileNumber} onChange={set} placeholder="+971 50 000 0000" />
