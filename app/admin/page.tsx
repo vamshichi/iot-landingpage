@@ -10,7 +10,7 @@ import {
   ChevronRight, CheckCircle, Phone, Mail, Globe,
   Building2, MapPin, Calendar, StickyNote, X,
   Trash2, Download, ChevronDown, ShieldCheck, Eye,
-  AlertTriangle,
+  AlertTriangle, MessageCircle
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────────────────────
@@ -183,6 +183,41 @@ function LeadDrawer({
     ["VIP Dinner", lead.vipDinner],
   ].filter(([, v]) => v && v.length > 0) as [string, string[]][];
 
+  const handleWhatsApp = () => {
+    const message = `
+New Lead Details
+
+Name: ${lead.fullName}
+Job Title: ${lead.jobTitle}
+Email: ${lead.workEmailAddress}
+Phone: ${lead.mobileNumber}
+
+Company: ${lead.organizationCompanyName ??
+      lead.companyName ??
+      lead.companyOrganizationName ??
+      "N/A"
+      }
+
+Industry: ${lead.industry ??
+      lead.sponsorIndustry ??
+      lead.brochureIndustry ??
+      "N/A"
+      }
+
+Lead Type: ${lead.formType}
+Status: ${lead.status}
+
+Submitted: ${new Date(lead.submittedAt).toLocaleString()}
+`;
+
+    const encodedMessage = encodeURIComponent(message);
+
+    window.open(
+      `https://wa.me/918431429127?text=${encodedMessage}`,
+      "_blank"
+    );
+  };
+
   return (
     <motion.div
       className="fixed inset-0 z-50 flex justify-end"
@@ -234,8 +269,8 @@ function LeadDrawer({
                   key={s}
                   onClick={() => onStatusChange(lead.id, s)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${lead.status === s
-                      ? STATUS_META[s].color + " ring-1 ring-inset ring-current"
-                      : "text-slate-500 border-slate-700 hover:border-slate-500 bg-white/5"
+                    ? STATUS_META[s].color + " ring-1 ring-inset ring-current"
+                    : "text-slate-500 border-slate-700 hover:border-slate-500 bg-white/5"
                     }`}
                 >
                   {STATUS_META[s].label}
@@ -330,14 +365,23 @@ function LeadDrawer({
         </div>
 
         {/* Footer actions */}
-        <div className="shrink-0 px-6 py-4 border-t border-white/5 flex justify-between items-center">
-          <a
-            href={`mailto:${lead.workEmailAddress}`}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 text-sm font-semibold border border-cyan-500/20 hover:bg-cyan-500/20 transition-all"
-          >
-            <Mail size={14} /> Reply
-          </a>
+        <div className="shrink-0 px-6 py-4 border-t border-white/5 flex flex-wrap gap-3 justify-between items-center">
+          <div className="flex items-center gap-2">
+            <a
+              href={`mailto:${lead.workEmailAddress}`}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 text-sm font-semibold border border-cyan-500/20 hover:bg-cyan-500/20 transition-all"
+            >
+              <Mail size={14} /> Reply
+            </a>
 
+            <button
+              onClick={handleWhatsApp}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 text-green-400 text-sm font-semibold border border-green-500/20 hover:bg-green-500/20 transition-all"
+            >
+              <MessageCircle size={14} />
+              WhatsApp
+            </button>
+          </div>
           {!confirmDelete ? (
             <button
               onClick={() => setConfirmDelete(true)}
