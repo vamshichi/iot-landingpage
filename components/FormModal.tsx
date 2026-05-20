@@ -294,59 +294,78 @@ function DelegateForm() {
   const [checks, setChecks] = useState<Record<string, string[]>>({
     keyAreasOfInterest: [], lookingToAchieve: [], galaDinner: [], consent: [],
   });
-  const [emailError, setEmailError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFields((p) => ({ ...p, [name]: value }));
-    if (name === "workEmailAddress") {
-      setEmailError(validateBusinessEmail(value));
-    }
+    setErrors((p) => ({ ...p, [name]: "" }));         // clear on change
   };
 
-  const setCheck = (name: string, val: string[]) =>
+  const setCheck = (name: string, val: string[]) => {
     setChecks((p) => ({ ...p, [name]: val }));
+    setErrors((p) => ({ ...p, [name]: "" }));
+  };
+
+  const validate = (): Record<string, string> => {
+    const errs: Record<string, string> = {};
+    if (!fields.fullName.trim())                  errs.fullName = "Full name is required.";
+    if (!fields.jobTitle.trim())                  errs.jobTitle = "Job title is required.";
+    if (!fields.organizationCompanyName.trim())   errs.organizationCompanyName = "Organization name is required.";
+    if (!fields.industry)                         errs.industry = "Please select an industry.";
+    if (!fields.workEmailAddress.trim()) {
+      errs.workEmailAddress = "Work email is required.";
+    } else {
+      const emailErr = validateBusinessEmail(fields.workEmailAddress);
+      if (emailErr) errs.workEmailAddress = emailErr;
+    }
+    if (!fields.mobileNumber.trim())              errs.mobileNumber = "Mobile number is required.";
+    if (!checks.keyAreasOfInterest.length)        errs.keyAreasOfInterest = "Please select at least one area of interest.";
+    if (!checks.lookingToAchieve.length)          errs.lookingToAchieve = "Please select at least one objective.";
+    if (!checks.galaDinner.length)                errs.galaDinner = "Please indicate whether you will attend.";
+    return errs;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const err = validateBusinessEmail(fields.workEmailAddress);
-    if (err) { setEmailError(err); return; }
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
     submit({ ...fields, ...checks });
   };
 
   if (status === "success") return <SuccessBanner />;
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit}>
+    <form className="space-y-6" onSubmit={handleSubmit} noValidate>
       {status === "error" && <ErrorBanner message={errorMsg} />}
 
       <SectionTitle>Personal Information</SectionTitle>
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Full Name" required>
-          <TextInput name="fullName" value={fields.fullName} onChange={set} placeholder="Jane Smith" />
+        <Field label="Full Name" required error={errors.fullName}>
+          <TextInput name="fullName" value={fields.fullName} onChange={set} placeholder="Jane Smith" hasError={!!errors.fullName} />
         </Field>
-        <Field label="Job Title" required>
-          <TextInput name="jobTitle" value={fields.jobTitle} onChange={set} placeholder="CISO" />
+        <Field label="Job Title" required error={errors.jobTitle}>
+          <TextInput name="jobTitle" value={fields.jobTitle} onChange={set} placeholder="CISO" hasError={!!errors.jobTitle} />
         </Field>
-        <Field label="Organization / Company Name" required>
-          <TextInput name="organizationCompanyName" value={fields.organizationCompanyName} onChange={set} placeholder="Acme Corp" />
+        <Field label="Organization / Company Name" required error={errors.organizationCompanyName}>
+          <TextInput name="organizationCompanyName" value={fields.organizationCompanyName} onChange={set} placeholder="Acme Corp" hasError={!!errors.organizationCompanyName} />
         </Field>
-        <Field label="Industry" required>
+        <Field label="Industry" required error={errors.industry}>
           <SelectInput
             name="industry" value={fields.industry} onChange={set}
             options={["BFSI","Government","Telecom","Healthcare","Manufacturing","Energy","Retail","Smart Cities","Others"]}
           />
         </Field>
-        <Field label="Work Email Address" required error={emailError}>
+        <Field label="Work Email Address" required error={errors.workEmailAddress}>
           <TextInput
             name="workEmailAddress" type="email"
             value={fields.workEmailAddress} onChange={set}
             placeholder="jane@acme.com"
-            hasError={!!emailError}
+            hasError={!!errors.workEmailAddress}
           />
         </Field>
-        <Field label="Mobile Number (with country code)" required>
-          <TextInput name="mobileNumber" value={fields.mobileNumber} onChange={set} placeholder="+971 50 000 0000" />
+        <Field label="Mobile Number (with country code)" required error={errors.mobileNumber}>
+          <TextInput name="mobileNumber" value={fields.mobileNumber} onChange={set} placeholder="+971 50 000 0000" hasError={!!errors.mobileNumber} />
         </Field>
       </div>
       <Field label="LinkedIn Profile URL">
@@ -354,17 +373,17 @@ function DelegateForm() {
       </Field>
 
       <SectionTitle>Your Interests & Objectives</SectionTitle>
-      <Field label="Key Areas of Interest" required>
+      <Field label="Key Areas of Interest" required error={errors.keyAreasOfInterest}>
         <CheckGroup name="keyAreasOfInterest" value={checks.keyAreasOfInterest} onChange={setCheck}
           items={["IoT Security Frameworks","AI-driven Threat Detection","Critical Infrastructure Protection","Smart Cities Security","Industrial IoT (IIoT) Security","Cloud & Edge Security","Zero Trust Architecture","Regulatory & Compliance"]} />
       </Field>
-      <Field label="What are you looking to achieve?" required>
+      <Field label="What are you looking to achieve?" required error={errors.lookingToAchieve}>
         <CheckGroup name="lookingToAchieve" value={checks.lookingToAchieve} onChange={setCheck}
           items={["Networking with Industry Leaders","Exploring Technology Solutions","Learning & Insights","Partnerships & Collaborations","Investment Opportunities"]} />
       </Field>
 
       <SectionTitle>Networking & Gala Dinner</SectionTitle>
-      <Field label="Will you attend the Gala Dinner & Awards Ceremony?" required>
+      <Field label="Will you attend the Gala Dinner & Awards Ceremony?" required error={errors.galaDinner}>
         <CheckGroup name="galaDinner" value={checks.galaDinner} onChange={setCheck} items={["Yes","No"]} />
       </Field>
 
@@ -391,48 +410,71 @@ function SponsorForm() {
     keyObjectives: [], targetAudience: [], sponsorshipCategory: [],
     addOns: [], activationPlans: [], scheduledMeetings: [], vipDinner: [], consent: [],
   });
-  const [emailError, setEmailError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFields((p) => ({ ...p, [name]: value }));
-    if (name === "workEmailAddress") {
-      setEmailError(validateBusinessEmail(value));
-    }
+    setErrors((p) => ({ ...p, [name]: "" }));
   };
 
-  const setCheck = (name: string, val: string[]) =>
+  const setCheck = (name: string, val: string[]) => {
     setChecks((p) => ({ ...p, [name]: val }));
+    setErrors((p) => ({ ...p, [name]: "" }));
+  };
+
+  const validate = (): Record<string, string> => {
+    const errs: Record<string, string> = {};
+    if (!fields.companyName.trim())           errs.companyName = "Company name is required.";
+    if (!fields.websiteUrl.trim())            errs.websiteUrl = "Website URL is required.";
+    if (!fields.industry)                     errs.industry = "Please select an industry.";
+    if (!fields.headquartersLocation.trim())  errs.headquartersLocation = "Headquarters location is required.";
+    if (!fields.companySize)                  errs.companySize = "Please select a company size.";
+    if (!fields.fullName.trim())              errs.fullName = "Full name is required.";
+    if (!fields.jobTitle.trim())              errs.jobTitle = "Job title is required.";
+    if (!fields.workEmailAddress.trim()) {
+      errs.workEmailAddress = "Work email is required.";
+    } else {
+      const emailErr = validateBusinessEmail(fields.workEmailAddress);
+      if (emailErr) errs.workEmailAddress = emailErr;
+    }
+    if (!fields.mobileNumber.trim())          errs.mobileNumber = "Mobile number is required.";
+    if (!checks.keyObjectives.length)         errs.keyObjectives = "Please select at least one objective.";
+    if (!checks.targetAudience.length)        errs.targetAudience = "Please select at least one target audience.";
+    if (!checks.sponsorshipCategory.length)   errs.sponsorshipCategory = "Please select a sponsorship category.";
+    if (!checks.scheduledMeetings.length)     errs.scheduledMeetings = "Please indicate your preference.";
+    return errs;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const err = validateBusinessEmail(fields.workEmailAddress);
-    if (err) { setEmailError(err); return; }
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
     submit({ ...fields, ...checks });
   };
 
   if (status === "success") return <SuccessBanner />;
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit}>
+    <form className="space-y-6" onSubmit={handleSubmit} noValidate>
       {status === "error" && <ErrorBanner message={errorMsg} />}
 
       <SectionTitle>Company Information</SectionTitle>
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Company Name" required>
-          <TextInput name="companyName" value={fields.companyName} onChange={set} placeholder="TechSecure Ltd" />
+        <Field label="Company Name" required error={errors.companyName}>
+          <TextInput name="companyName" value={fields.companyName} onChange={set} placeholder="TechSecure Ltd" hasError={!!errors.companyName} />
         </Field>
-        <Field label="Website URL" required>
-          <TextInput name="websiteUrl" value={fields.websiteUrl} onChange={set} placeholder="https://techsecure.com" />
+        <Field label="Website URL" required error={errors.websiteUrl}>
+          <TextInput name="websiteUrl" value={fields.websiteUrl} onChange={set} placeholder="https://techsecure.com" hasError={!!errors.websiteUrl} />
         </Field>
-        <Field label="Industry" required>
+        <Field label="Industry" required error={errors.industry}>
           <SelectInput name="industry" value={fields.industry} onChange={set}
             options={["Cybersecurity","IoT Solutions","Cloud","AI","Telecom","System Integrator","Consulting","Government","Startup","Others"]} />
         </Field>
-        <Field label="Headquarters Location" required>
-          <TextInput name="headquartersLocation" value={fields.headquartersLocation} onChange={set} placeholder="Dubai, UAE" />
+        <Field label="Headquarters Location" required error={errors.headquartersLocation}>
+          <TextInput name="headquartersLocation" value={fields.headquartersLocation} onChange={set} placeholder="Dubai, UAE" hasError={!!errors.headquartersLocation} />
         </Field>
-        <Field label="Company Size" required>
+        <Field label="Company Size" required error={errors.companySize}>
           <SelectInput name="companySize" value={fields.companySize} onChange={set}
             options={["1–50","51–200","201–500","500–1000","1000+"]} />
         </Field>
@@ -440,22 +482,22 @@ function SponsorForm() {
 
       <SectionTitle>Primary Contact Details</SectionTitle>
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Full Name" required>
-          <TextInput name="fullName" value={fields.fullName} onChange={set} placeholder="John Doe" />
+        <Field label="Full Name" required error={errors.fullName}>
+          <TextInput name="fullName" value={fields.fullName} onChange={set} placeholder="John Doe" hasError={!!errors.fullName} />
         </Field>
-        <Field label="Job Title" required>
-          <TextInput name="jobTitle" value={fields.jobTitle} onChange={set} placeholder="VP Partnerships" />
+        <Field label="Job Title" required error={errors.jobTitle}>
+          <TextInput name="jobTitle" value={fields.jobTitle} onChange={set} placeholder="VP Partnerships" hasError={!!errors.jobTitle} />
         </Field>
-        <Field label="Work Email Address" required error={emailError}>
+        <Field label="Work Email Address" required error={errors.workEmailAddress}>
           <TextInput
             name="workEmailAddress" type="email"
             value={fields.workEmailAddress} onChange={set}
             placeholder="john@techsecure.com"
-            hasError={!!emailError}
+            hasError={!!errors.workEmailAddress}
           />
         </Field>
-        <Field label="Mobile Number (with country code)" required>
-          <TextInput name="mobileNumber" value={fields.mobileNumber} onChange={set} placeholder="+971 50 000 0000" />
+        <Field label="Mobile Number (with country code)" required error={errors.mobileNumber}>
+          <TextInput name="mobileNumber" value={fields.mobileNumber} onChange={set} placeholder="+971 50 000 0000" hasError={!!errors.mobileNumber} />
         </Field>
       </div>
       <Field label="LinkedIn Profile URL">
@@ -463,17 +505,17 @@ function SponsorForm() {
       </Field>
 
       <SectionTitle>Sponsorship Objectives</SectionTitle>
-      <Field label="Key Objectives for Sponsoring" required>
+      <Field label="Key Objectives for Sponsoring" required error={errors.keyObjectives}>
         <CheckGroup name="keyObjectives" value={checks.keyObjectives} onChange={setCheck}
           items={["Brand Visibility","Lead Generation","Thought Leadership / speaking slots","Product Launch","Networking & Partnerships","Market Expansion"]} />
       </Field>
-      <Field label="Target Audience You Want to Connect With" required>
+      <Field label="Target Audience You Want to Connect With" required error={errors.targetAudience}>
         <CheckGroup name="targetAudience" value={checks.targetAudience} onChange={setCheck}
           items={["CISOs","CIOs / CTOs","Government Leaders","Smart City Authorities","Enterprise IT Leaders","Investors / Startups"]} />
       </Field>
 
       <SectionTitle>Sponsorship Preferences</SectionTitle>
-      <Field label="Preferred Sponsorship Category" required>
+      <Field label="Preferred Sponsorship Category" required error={errors.sponsorshipCategory}>
         <CheckGroup name="sponsorshipCategory" value={checks.sponsorshipCategory} onChange={setCheck}
           items={["Title Sponsor","Platinum Sponsor","Gold Sponsor","Silver Sponsor","Startup Sponsor","Not Sure – Need Consultation"]} />
       </Field>
@@ -498,7 +540,7 @@ function SponsorForm() {
       </Field>
 
       <SectionTitle>Meeting & Networking Preferences</SectionTitle>
-      <Field label="Pre-scheduled 1:1 meetings with delegates?" required>
+      <Field label="Pre-scheduled 1:1 meetings with delegates?" required error={errors.scheduledMeetings}>
         <CheckGroup name="scheduledMeetings" value={checks.scheduledMeetings} onChange={setCheck} items={["Yes","No"]} />
       </Field>
       <Field label="VIP Networking Dinner & Awards Night?">
@@ -513,7 +555,6 @@ function SponsorForm() {
     </form>
   );
 }
-
 /* ─────────────────────────────────────────────────────────────
    BROCHURE FORM
 ───────────────────────────────────────────────────────────── */
@@ -526,73 +567,92 @@ function BrochureForm() {
   const [checks, setChecks] = useState<Record<string, string[]>>({
     interestedIn: [], consent: [],
   });
-  const [emailError, setEmailError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFields((p) => ({ ...p, [name]: value }));
-    if (name === "workEmailAddress") {
-      setEmailError(validateBusinessEmail(value));
-    }
+    setErrors((p) => ({ ...p, [name]: "" }));
   };
 
-  const setCheck = (name: string, val: string[]) =>
+  const setCheck = (name: string, val: string[]) => {
     setChecks((p) => ({ ...p, [name]: val }));
+    setErrors((p) => ({ ...p, [name]: "" }));
+  };
+
+  const validate = (): Record<string, string> => {
+    const errs: Record<string, string> = {};
+    if (!fields.fullName.trim())                  errs.fullName = "Full name is required.";
+    if (!fields.jobTitle.trim())                  errs.jobTitle = "Job title is required.";
+    if (!fields.companyOrganizationName.trim())   errs.companyOrganizationName = "Company name is required.";
+    if (!fields.workEmailAddress.trim()) {
+      errs.workEmailAddress = "Work email is required.";
+    } else {
+      const emailErr = validateBusinessEmail(fields.workEmailAddress);
+      if (emailErr) errs.workEmailAddress = emailErr;
+    }
+    if (!fields.mobileNumber.trim())              errs.mobileNumber = "Mobile number is required.";
+    if (!fields.industry)                         errs.industry = "Please select an industry.";
+    if (!fields.companySize)                      errs.companySize = "Please select a company size.";
+    if (!fields.countryRegion.trim())             errs.countryRegion = "Country / region is required.";
+    if (!checks.interestedIn.length)              errs.interestedIn = "Please select at least one option.";
+    return errs;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const err = validateBusinessEmail(fields.workEmailAddress);
-    if (err) { setEmailError(err); return; }
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
     submit({ ...fields, ...checks });
   };
 
   if (status === "success") return <SuccessBanner />;
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit}>
+    <form className="space-y-6" onSubmit={handleSubmit} noValidate>
       {status === "error" && <ErrorBanner message={errorMsg} />}
 
       <SectionTitle>Basic Information</SectionTitle>
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Full Name" required>
-          <TextInput name="fullName" value={fields.fullName} onChange={set} placeholder="Alex Rahman" />
+        <Field label="Full Name" required error={errors.fullName}>
+          <TextInput name="fullName" value={fields.fullName} onChange={set} placeholder="Alex Rahman" hasError={!!errors.fullName} />
         </Field>
-        <Field label="Job Title" required>
-          <TextInput name="jobTitle" value={fields.jobTitle} onChange={set} placeholder="Security Architect" />
+        <Field label="Job Title" required error={errors.jobTitle}>
+          <TextInput name="jobTitle" value={fields.jobTitle} onChange={set} placeholder="Security Architect" hasError={!!errors.jobTitle} />
         </Field>
-        <Field label="Company / Organization Name" required>
-          <TextInput name="companyOrganizationName" value={fields.companyOrganizationName} onChange={set} placeholder="Gulf Cyber Inc" />
+        <Field label="Company / Organization Name" required error={errors.companyOrganizationName}>
+          <TextInput name="companyOrganizationName" value={fields.companyOrganizationName} onChange={set} placeholder="Gulf Cyber Inc" hasError={!!errors.companyOrganizationName} />
         </Field>
-        <Field label="Work Email Address" required error={emailError}>
+        <Field label="Work Email Address" required error={errors.workEmailAddress}>
           <TextInput
             name="workEmailAddress" type="email"
             value={fields.workEmailAddress} onChange={set}
             placeholder="alex@gulfcyber.com"
-            hasError={!!emailError}
+            hasError={!!errors.workEmailAddress}
           />
         </Field>
-        <Field label="Mobile Number (with country code)" required>
-          <TextInput name="mobileNumber" value={fields.mobileNumber} onChange={set} placeholder="+971 50 000 0000" />
+        <Field label="Mobile Number (with country code)" required error={errors.mobileNumber}>
+          <TextInput name="mobileNumber" value={fields.mobileNumber} onChange={set} placeholder="+971 50 000 0000" hasError={!!errors.mobileNumber} />
         </Field>
       </div>
 
       <SectionTitle>Professional Details</SectionTitle>
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Industry" required>
+        <Field label="Industry" required error={errors.industry}>
           <SelectInput name="industry" value={fields.industry} onChange={set}
             options={["Cybersecurity","IoT","BFSI","Government","Telecom","Healthcare","Manufacturing","Energy","Retail","Smart Cities","Others"]} />
         </Field>
-        <Field label="Company Size" required>
+        <Field label="Company Size" required error={errors.companySize}>
           <SelectInput name="companySize" value={fields.companySize} onChange={set}
             options={["1–50","51–200","201–500","500–1000","1000+"]} />
         </Field>
-        <Field label="Country / Region" required>
-          <TextInput name="countryRegion" value={fields.countryRegion} onChange={set} placeholder="United Arab Emirates" />
+        <Field label="Country / Region" required error={errors.countryRegion}>
+          <TextInput name="countryRegion" value={fields.countryRegion} onChange={set} placeholder="United Arab Emirates" hasError={!!errors.countryRegion} />
         </Field>
       </div>
 
       <SectionTitle>Your Interest in the Event</SectionTitle>
-      <Field label="I am interested in:" required>
+      <Field label="I am interested in:" required error={errors.interestedIn}>
         <CheckGroup name="interestedIn" value={checks.interestedIn} onChange={setCheck}
           items={["Attending as a Delegate","Speaking Opportunities","Sponsorship & Partnership","Exhibiting","Awards Participation"]} />
       </Field>
