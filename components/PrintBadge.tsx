@@ -10,23 +10,23 @@ export default function PrintBadge({ lead }: any) {
   const componentRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
+
     contentRef: componentRef,
 
     documentTitle: `${lead.fullName}-badge`,
 
     pageStyle: `
       @page {
-        size: auto;
-        margin: 0mm;
-      }
-
-      body {
         margin: 0;
-        padding: 0;
-        background: white;
       }
 
       @media print {
+
+        body {
+          margin: 0;
+          padding: 0;
+          background: white;
+        }
 
         body * {
           visibility: hidden;
@@ -53,14 +53,14 @@ export default function PrintBadge({ lead }: any) {
   return (
     <div className="flex flex-col items-center">
 
-      {/* PRINTABLE AREA */}
+      {/* PRINT AREA */}
       <div id="print-area" ref={componentRef}>
         <BadgeCard lead={lead} />
       </div>
 
-      {/* PRINT BUTTON */}
+      {/* BUTTON */}
       <button
-        onClick={handlePrint}
+        onClick={() => handlePrint()}
         className="mt-4 px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 transition-all text-white font-semibold"
       >
         Print Badge
