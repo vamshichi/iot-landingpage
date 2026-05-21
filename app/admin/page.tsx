@@ -306,6 +306,42 @@ Submitted: ${new Date(lead.submittedAt).toLocaleString()}
     }
   };
 
+  const resetCheckIn = async () => {
+
+  try {
+
+    const res = await fetch("/api/reset-check-in", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        leadId: lead.id,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+
+      alert("Check-In Reset");
+
+      window.location.reload();
+
+    } else {
+
+      alert(data.message);
+
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert("Failed to reset");
+  }
+};
+
   return (
     <motion.div
       className="fixed inset-0 z-50 flex justify-end"
@@ -468,6 +504,14 @@ Submitted: ${new Date(lead.submittedAt).toLocaleString()}
             >
               🎟 Generate Badge
             </button>
+          {lead.checkedIn && (
+  <button
+    onClick={resetCheckIn}
+    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 text-sm font-semibold border border-yellow-500/20 hover:bg-yellow-500/20 transition-all"
+  >
+    Reset Check-In
+  </button>
+)}
 
             <button
               onClick={handleWhatsApp}
