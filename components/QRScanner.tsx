@@ -9,18 +9,29 @@ export default function QRScanner() {
 
   useEffect(() => {
 
-    const scanner = new Html5QrcodeScanner(
-      "reader",
-      {
-        fps: 10,
-        qrbox: 250,
-      },
-      false
-    );
+    let scanner: Html5QrcodeScanner;
 
-    scanner.render(success, error);
+    const startScanner = async () => {
 
-    async function success(decodedText: string) {
+      scanner = new Html5QrcodeScanner(
+        "reader",
+        {
+          fps: 10,
+          qrbox: {
+            width: 250,
+            height: 250,
+          },
+          rememberLastUsedCamera: true,
+        },
+        false
+      );
+
+      scanner.render(onScanSuccess, onScanFailure);
+    };
+
+    startScanner();
+
+    async function onScanSuccess(decodedText: string) {
 
       try {
 
@@ -40,25 +51,38 @@ export default function QRScanner() {
 
         setMessage(data.message);
 
-      } catch (err) {
+      } catch (error) {
+
+        console.error(error);
+
         setMessage("Invalid QR Code");
       }
-
     }
 
-    function error(err: any) {
-      console.log(err);
+    function onScanFailure(error: any) {
+      // ignore scan errors
     }
+
+    return () => {
+      scanner?.clear().catch(() => {});
+    };
 
   }, []);
 
   return (
-    <div>
+    <div className="max-w-xl mx-auto">
 
-      <div id="reader" />
+      <div
+        id="reader"
+        className="overflow-hidden rounded-2xl border border-cyan-500/20"
+      />
 
-      <div className="mt-6 text-xl font-semibold">
-        {message}
+      <div className="mt-6 text-center">
+
+        <p className="text-lg font-semibold text-cyan-400">
+          {message}
+        </p>
+
       </div>
 
     </div>
