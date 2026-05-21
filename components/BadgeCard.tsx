@@ -7,7 +7,7 @@ interface Props {
 export default function BadgeCard({ lead }: Props) {
 
   return (
-<div className="w-[350px] min-h-[620px] bg-white rounded-3xl overflow-hidden shadow-xl flex flex-col">
+<div className="w-[350px] h-[550px] bg-white rounded-3xl overflow-hidden shadow-xl flex flex-col">
 
       <div className="bg-[#041220] text-white p-6 text-center">
 
