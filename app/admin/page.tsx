@@ -12,6 +12,7 @@ import {
   Trash2, Download, ChevronDown, ShieldCheck, Eye,
   AlertTriangle, MessageCircle
 } from "lucide-react";
+import PrintBadge from "@/components/PrintBadge";
 
 /* ─────────────────────────────────────────────────────────────
    TYPES
@@ -63,6 +64,16 @@ interface Lead {
   achievementSummary?: string
   innovation?: string
   impact?: string
+
+
+  ticketId?: string;
+  qrCode?: string;
+  badgeType?: string;
+
+  checkedIn?: boolean;
+  checkedInAt?: string;
+  checkInBy?: string;
+  badgeSent?: boolean;
 }
 
 interface Stats {
@@ -142,6 +153,9 @@ function LeadDrawer({
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  const [generatedLead, setGeneratedLead] = useState<any>(null);
+  const [sending, setSending] = useState(false);
+
   const tm = TYPE_META[lead.formType];
   const sm = STATUS_META[lead.status];
 
@@ -216,6 +230,80 @@ Submitted: ${new Date(lead.submittedAt).toLocaleString()}
       `https://wa.me/918431429127?text=${encodedMessage}`,
       "_blank"
     );
+  };
+
+  const sendBadgeEmail = async () => {
+
+    if (!generatedLead) return;
+
+    try {
+
+      setSending(true);
+
+      const res = await fetch("/api/send-badge-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          leadId: generatedLead.id,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert("Badge Email Sent Successfully");
+      } else {
+        alert(data.message);
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Failed to send email");
+
+    } finally {
+
+      setSending(false);
+
+    }
+  };
+
+  const generateBadge = async () => {
+
+    try {
+
+      const res = await fetch("/api/badge", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          leadId: lead.id,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+
+        setGeneratedLead(data.lead);
+
+      } else {
+
+        alert(data.message);
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Failed to generate badge");
+
+    }
   };
 
   return (
@@ -375,6 +463,13 @@ Submitted: ${new Date(lead.submittedAt).toLocaleString()}
             </a>
 
             <button
+              onClick={generateBadge}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/10 text-purple-400 text-sm font-semibold border border-purple-500/20 hover:bg-purple-500/20 transition-all"
+            >
+              🎟 Generate Badge
+            </button>
+
+            <button
               onClick={handleWhatsApp}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 text-green-400 text-sm font-semibold border border-green-500/20 hover:bg-green-500/20 transition-all"
             >
@@ -405,6 +500,37 @@ Submitted: ${new Date(lead.submittedAt).toLocaleString()}
             </div>
           )}
         </div>
+        {generatedLead && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
+
+<div className="bg-[#06111f] border border-cyan-500/20 rounded-2xl p-6 max-w-lg w-full max-h-[95vh] overflow-y-auto relative">
+              <button
+                onClick={() => setGeneratedLead(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-white"
+              >
+                ✕
+              </button>
+
+              <h2 className="text-xl font-bold text-white mb-6 text-center">
+                Badge Generated
+              </h2>
+
+              <div className="flex justify-center">
+                <PrintBadge lead={generatedLead} />
+              </div>
+
+              <button
+                onClick={sendBadgeEmail}
+                disabled={sending}
+                className="w-full mt-6 bg-cyan-500 hover:bg-cyan-400 transition-all text-white py-3 rounded-xl font-semibold"
+              >
+                {sending ? "Sending..." : "Send Badge Email"}
+              </button>
+
+            </div>
+
+          </div>
+        )}
       </motion.aside>
     </motion.div>
   );
@@ -453,6 +579,7 @@ export default function AdminPage() {
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<FormType | "">("");
   const [filterStatus, setFilterStatus] = useState<LeadStatus | "">("");
+  const [filterBadgeSent, setFilterBadgeSent] = useState("");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [page, setPage] = useState(1);
   const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -468,6 +595,7 @@ export default function AdminPage() {
         limit: "20",
         formType: filterType,
         status: filterStatus,
+        badgeSent: filterBadgeSent,
         search: q,
         sort: "-submittedAt",
       });
@@ -619,6 +747,25 @@ export default function AdminPage() {
               </select>
               <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
             </div>
+            <div className="relative">
+              <select
+                value={filterBadgeSent}
+                onChange={(e) => {
+                  setFilterBadgeSent(e.target.value);
+                  setPage(1);
+                }}
+                className="appearance-none bg-[#0a1628]/60 border border-cyan-500/20 rounded-lg pl-3 pr-8 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 transition-all"
+              >
+                <option value="">All Badges</option>
+                <option value="sent">Sent</option>
+                <option value="pending">Pending</option>
+              </select>
+
+              <ChevronDown
+                size={13}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+              />
+            </div>
           </div>
         </div>
 
@@ -642,6 +789,12 @@ export default function AdminPage() {
                   <th className="text-left px-4 py-3 font-semibold hidden lg:table-cell">Company</th>
                   <th className="text-left px-4 py-3 font-semibold">Type</th>
                   <th className="text-left px-4 py-3 font-semibold">Status</th>
+                  <th className="text-left px-4 py-3 font-semibold">
+                    Check-In
+                  </th>
+                  <th className="text-left px-4 py-3 font-semibold">
+                    Badge
+                  </th>
                   <th className="text-left px-4 py-3 font-semibold hidden sm:table-cell">Date</th>
                   <th className="px-4 py-3" />
                 </tr>
@@ -694,6 +847,28 @@ export default function AdminPage() {
                             <span className={`w-1.5 h-1.5 rounded-full ${sm.dot}`} />
                             {sm.label}
                           </Badge>
+                        </td>
+                        <td className="px-4 py-3">
+                          {lead.checkedIn ? (
+                            <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-xs border border-green-500/20">
+                              Checked-In
+                            </span>
+                          ) : (
+                            <span className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs border border-yellow-500/20">
+                              Pending
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          {lead.badgeSent ? (
+                            <span className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs border border-cyan-500/20">
+                              Sent
+                            </span>
+                          ) : (
+                            <span className="px-3 py-1 rounded-full bg-slate-500/10 text-slate-400 text-xs border border-slate-500/20">
+                              Pending
+                            </span>
+                          )}
                         </td>
                         <td className="px-4 py-3 hidden sm:table-cell text-slate-500 text-xs whitespace-nowrap">
                           {new Date(lead.submittedAt).toLocaleDateString("en-AE", { day: "2-digit", month: "short", year: "numeric" })}

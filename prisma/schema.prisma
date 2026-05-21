@@ -11,7 +11,7 @@ enum FormType {
   delegate
   sponsor
   brochure
-  nomination 
+  nomination
 }
 
 enum LeadStatus {
@@ -77,4 +77,14 @@ model Lead {
   innovation         String?
   impact             String?
   nominationConsent  String[]
+
+  // ── ticket ───────────────────────────────────────────
+
+  ticketId String? @db.String
+  qrCode      String?
+  badgeType   String?
+  checkedIn   Boolean   @default(false)
+  checkedInAt DateTime?
+  checkInBy   String?
+  badgeSent Boolean @default(false)
 }
