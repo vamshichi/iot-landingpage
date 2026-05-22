@@ -24,6 +24,12 @@ const speakers = [
     company: "Elyzee Healthcare Group",
     image: "/speakers/Dr. Shijin.png",
   },
+  {
+  name: "Bravine Otieno",
+  role: "Head of Global Operations & Infrastructure Service- Middle East & Africa Region",
+  company: "DB Schenker",
+  image: "/speakers/Bravine Otieno.jpg",
+},
 ];
 
 export function SpeakersSection() {
