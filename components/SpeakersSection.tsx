@@ -30,6 +30,12 @@ const speakers = [
   company: "DB Schenker",
   image: "/speakers/Bravine Otieno.jpg",
 },
+ {
+    name: "Ebrahim Kamalzadeh",
+    role: "Chief Information Officer",
+    company: "Al Nabooda Automobiles LLC",
+    image: "/speakers/Ebrahim Kamalzadeh.jpg",
+  },
 ];
 
 export function SpeakersSection() {

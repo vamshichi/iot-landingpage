@@ -308,39 +308,39 @@ Submitted: ${new Date(lead.submittedAt).toLocaleString()}
 
   const resetCheckIn = async () => {
 
-  try {
+    try {
 
-    const res = await fetch("/api/reset-check-in", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        leadId: lead.id,
-      }),
-    });
+      const res = await fetch("/api/reset-check-in", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          leadId: lead.id,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.success) {
+      if (data.success) {
 
-      alert("Check-In Reset");
+        alert("Check-In Reset");
 
-      window.location.reload();
+        window.location.reload();
 
-    } else {
+      } else {
 
-      alert(data.message);
+        alert(data.message);
 
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert("Failed to reset");
     }
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert("Failed to reset");
-  }
-};
+  };
 
   return (
     <motion.div
@@ -504,14 +504,14 @@ Submitted: ${new Date(lead.submittedAt).toLocaleString()}
             >
               🎟 Generate Badge
             </button>
-          {lead.checkedIn && (
-  <button
-    onClick={resetCheckIn}
-    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 text-sm font-semibold border border-yellow-500/20 hover:bg-yellow-500/20 transition-all"
-  >
-    Reset Check-In
-  </button>
-)}
+            {lead.checkedIn && (
+              <button
+                onClick={resetCheckIn}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 text-sm font-semibold border border-yellow-500/20 hover:bg-yellow-500/20 transition-all"
+              >
+                Reset Check-In
+              </button>
+            )}
 
             <button
               onClick={handleWhatsApp}
@@ -547,7 +547,7 @@ Submitted: ${new Date(lead.submittedAt).toLocaleString()}
         {generatedLead && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
 
-<div className="bg-[#06111f] border border-cyan-500/20 rounded-2xl p-6 max-w-lg w-full max-h-[95vh] overflow-y-auto relative">
+            <div className="bg-[#06111f] border border-cyan-500/20 rounded-2xl p-6 max-w-lg w-full max-h-[95vh] overflow-y-auto relative">
               <button
                 onClick={() => setGeneratedLead(null)}
                 className="absolute top-4 right-4 text-slate-400 hover:text-white"
