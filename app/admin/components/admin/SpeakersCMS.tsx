@@ -153,7 +153,7 @@ export default function SpeakersCMS() {
     try {
 
       await fetch(
-        `/api/admin/speakers/${id}`,
+        `/api/speakers/${id}`,
         {
           method: "DELETE",
         }

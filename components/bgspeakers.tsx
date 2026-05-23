@@ -16,7 +16,7 @@ export function BgSpeakers() {
     const [speakers, setSpeakers] = useState<Speaker[]>([]);
 
 useEffect(() => {
-  fetch("/api/admin/speakers")
+  fetch("/api/speakers")
     .then((res) => res.json())
     .then((data) => setSpeakers(data.speakers));
 }, []);

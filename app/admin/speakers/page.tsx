@@ -22,7 +22,7 @@ export default function SpeakersCMS() {
 
     const uploadData = await uploadRes.json();
 
-    await fetch("/api/admin/speakers", {
+    await fetch("/api/speakers", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

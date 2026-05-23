@@ -16,7 +16,7 @@ export function BgPartners() {
   const [partners, setPartners] = useState<Partner[]>([]);
 
   useEffect(() => {
-    fetch("/api/admin/partners")
+    fetch("/api/partners")
       .then((res) => res.json())
       .then((data) => setPartners(data.partners));
   }, []);

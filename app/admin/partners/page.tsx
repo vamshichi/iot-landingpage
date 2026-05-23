@@ -25,7 +25,7 @@ export default function PartnersCMS() {
       const uploadData = await uploadRes.json();
 
       // Save partner to DB
-      await fetch("/api/admin/partners", {
+      await fetch("/api/partners", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
