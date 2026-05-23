@@ -31,7 +31,7 @@ export default function PartnersCMS() {
   const fetchPartners = async () => {
 
     const res = await fetch(
-      "/api/admin/partners"
+      "/api/partners"
     );
 
     const data = await res.json();
@@ -87,7 +87,7 @@ export default function PartnersCMS() {
 
       /* Save partner */
       const res = await fetch(
-        "/api/admin/partners",
+        "/api/partners",
         {
           method: "POST",
           headers: {
@@ -148,7 +148,7 @@ export default function PartnersCMS() {
     try {
 
       await fetch(
-        `/api/admin/partners/${id}`,
+        `/api/partners/${id}`,
         {
           method: "DELETE",
         }

@@ -33,7 +33,7 @@ export default function SpeakersCMS() {
   const fetchSpeakers = async () => {
 
     const res = await fetch(
-      "/api/admin/speakers"
+      "/api/speakers"
     );
 
     const data = await res.json();
@@ -89,7 +89,7 @@ export default function SpeakersCMS() {
 
       /* Create speaker */
       const res = await fetch(
-        "/api/admin/speakers",
+        "/api/speakers",
         {
           method: "POST",
           headers: {
