@@ -17,6 +17,8 @@ import { SponsorsOverviewSection } from '@/components/SponsorsOverviewSection';
 import WhatsAppButton from '@/components/whatsapp';
 import OrganizerBadge from "@/components/OrganizerBadge";
 import { AwardsSection } from '@/components/AwardsSection';
+import { BgSpeakers } from '@/components/bgspeakers';
+import { BgPartners } from '@/components/bgpartners';
 
 export default function Home() {
   return (
@@ -34,11 +36,13 @@ export default function Home() {
         <AgendaSection />
         <AwardsSection />
         <SessionHighlightsSection />
-        <SpeakersSection />
+        <BgSpeakers />
+        {/* <SpeakersSection /> */}
         <WhoShouldAttendSection />
         <SponsorsOverviewSection />
          <SponsorsSection />
-        <PartnerSection />
+         <BgPartners />
+        {/* <PartnerSection /> */}
         <ContactSection />
         {/* <OrganizerBadge /> */}
         <WhatsAppButton />

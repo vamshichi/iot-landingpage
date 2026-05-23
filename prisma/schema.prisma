@@ -88,3 +88,23 @@ model Lead {
   checkInBy   String?
   badgeSent Boolean @default(false)
 }
+
+model Speaker {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  role        String
+  company     String
+  image       String
+  linkedinUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Partner {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  logo       String
+  websiteUrl String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

@@ -1,973 +1,673 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { Trophy } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+
 import {
-  Users, Handshake, FileText, TrendingUp,
-  Search, Filter, RefreshCw, LogOut, ChevronLeft,
-  ChevronRight, CheckCircle, Phone, Mail, Globe,
-  Building2, MapPin, Calendar, StickyNote, X,
-  Trash2, Download, ChevronDown, ShieldCheck, Eye,
-  AlertTriangle, MessageCircle
+  LayoutDashboard,
+  Mic,
+  ImageIcon,
+  Users,
+  ChevronDown,
+  ChevronRight,
+  Handshake,
+  FileText,
+  Trophy,
+  List,
+  UserCheck,
+  LogOut,
+  Shield,
 } from "lucide-react";
-import PrintBadge from "@/components/PrintBadge";
 
-/* ─────────────────────────────────────────────────────────────
-   TYPES
-───────────────────────────────────────────────────────────── */
-type FormType = "delegate" | "sponsor" | "brochure" | "nomination";
-type LeadStatus = "new" | "contacted" | "converted" | "rejected";
+import { AnimatePresence, motion } from "framer-motion";
 
-interface Lead {
-  id: string;
-  formType: FormType;
-  status: LeadStatus;
-  submittedAt: string;
-  notes: string;
-  fullName: string;
-  jobTitle: string;
-  workEmailAddress: string;
-  mobileNumber: string;
-  linkedInProfileUrl?: string;
-  // delegate
-  organizationCompanyName?: string;
-  industry?: string;
-  keyAreasOfInterest?: string[];
-  lookingToAchieve?: string[];
-  galaDinner?: string[];
-  // sponsor
-  companyName?: string;
-  websiteUrl?: string;
-  sponsorIndustry?: string;
-  headquartersLocation?: string;
-  companySize?: string;
-  keyObjectives?: string[];
-  targetAudience?: string[];
-  sponsorshipCategory?: string[];
-  addOns?: string[];
-  activationPlans?: string[];
-  customRequests?: string;
-  scheduledMeetings?: string[];
-  vipDinner?: string[];
-  // brochure
-  companyOrganizationName?: string;
-  brochureIndustry?: string;
-  brochureCompanySize?: string;
-  countryRegion?: string;
-  interestedIn?: string[];
-  // nomination
-  nomineeName?: string
-  nomineeTitle?: string
-  nomineeCompany?: string
-  achievementSummary?: string
-  innovation?: string
-  impact?: string
+import SpeakersCMS from "./components/admin/SpeakersCMS";
+import PartnersCMS from "./components/admin/PartnersCMS";
+import LeadsPage from "./components/admin/leads";
+import DashboardStats from "./components/admin/DashboardStats";
 
+/* ───────────────────────────────────────────── */
+/* Roles */
+/* ───────────────────────────────────────────── */
 
-  ticketId?: string;
-  qrCode?: string;
-  badgeType?: string;
+export type Role =
+  | "admin"
+  | "editor"
+  | "viewer";
 
-  checkedIn?: boolean;
-  checkedInAt?: string;
-  checkInBy?: string;
-  badgeSent?: boolean;
+const CURRENT_ROLE: Role =
+  "admin";
+
+function can(
+  role: Role,
+  action: "view" | "edit" | "delete"
+): boolean {
+
+  if (action === "view")
+    return true;
+
+  if (action === "edit")
+    return role !== "viewer";
+
+  if (action === "delete")
+    return role === "admin";
+
+  return false;
 }
+
+/* ───────────────────────────────────────────── */
+/* Types */
+/* ───────────────────────────────────────────── */
+
+export type LeadFilter =
+  | ""
+  | "delegate"
+  | "sponsor"
+  | "brochure"
+  | "nomination";
 
 interface Stats {
   total: number;
-  byType: Record<string, number>;
-  byStatus: Record<string, number>;
+
+  byType: {
+    delegate?: number;
+    sponsor?: number;
+    brochure?: number;
+    nomination?: number;
+  };
+
+  byStatus: {
+    new?: number;
+    contacted?: number;
+    converted?: number;
+    rejected?: number;
+  };
 }
 
-interface Pagination {
-  page: number;
-  limit: number;
-  total: number;
-  pages: number;
+interface SubItem {
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  filter: LeadFilter;
+  allowedRoles: Role[];
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CONSTANTS
-───────────────────────────────────────────────────────────── */
-const STATUS_META: Record<LeadStatus, { label: string; color: string; dot: string }> = {
-  new: { label: "New", color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30", dot: "bg-cyan-400" },
-  contacted: { label: "Contacted", color: "text-blue-400 bg-blue-400/10 border-blue-400/30", dot: "bg-blue-400" },
-  converted: { label: "Converted", color: "text-green-400 bg-green-400/10 border-green-400/30", dot: "bg-green-400" },
-  rejected: { label: "Rejected", color: "text-red-400 bg-red-400/10 border-red-400/30", dot: "bg-red-400" },
+interface MenuItem {
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  allowedRoles: Role[];
+  children?: SubItem[];
+}
+
+/* ───────────────────────────────────────────── */
+/* Menu */
+/* ───────────────────────────────────────────── */
+
+const LEAD_CHILDREN: SubItem[] = [
+  {
+    key: "leads-all",
+    label: "All Leads",
+    icon: <List size={14} />,
+    filter: "",
+    allowedRoles: [
+      "admin",
+      "editor",
+      "viewer",
+    ],
+  },
+
+  {
+    key: "leads-delegate",
+    label: "Delegates",
+    icon: <UserCheck size={14} />,
+    filter: "delegate",
+    allowedRoles: [
+      "admin",
+      "editor",
+      "viewer",
+    ],
+  },
+
+  {
+    key: "leads-sponsor",
+    label: "Sponsors",
+    icon: <Handshake size={14} />,
+    filter: "sponsor",
+    allowedRoles: [
+      "admin",
+      "editor",
+    ],
+  },
+
+  {
+    key: "leads-brochure",
+    label: "Brochures",
+    icon: <FileText size={14} />,
+    filter: "brochure",
+    allowedRoles: [
+      "admin",
+      "editor",
+      "viewer",
+    ],
+  },
+
+  {
+    key: "leads-nomination",
+    label: "Nominations",
+    icon: <Trophy size={14} />,
+    filter: "nomination",
+    allowedRoles: ["admin"],
+  },
+];
+
+const MENU: MenuItem[] = [
+  {
+    key: "dashboard",
+    label: "Dashboard",
+    icon: (
+      <LayoutDashboard size={18} />
+    ),
+    allowedRoles: [
+      "admin",
+      "editor",
+      "viewer",
+    ],
+  },
+
+  {
+    key: "speakers",
+    label: "Speakers CMS",
+    icon: <Mic size={18} />,
+    allowedRoles: [
+      "admin",
+      "editor",
+    ],
+  },
+
+  {
+    key: "partners",
+    label: "Partners CMS",
+    icon: <ImageIcon size={18} />,
+    allowedRoles: [
+      "admin",
+      "editor",
+    ],
+  },
+
+  {
+    key: "leads",
+    label: "Leads",
+    icon: <Users size={18} />,
+    allowedRoles: [
+      "admin",
+      "editor",
+      "viewer",
+    ],
+    children: LEAD_CHILDREN,
+  },
+];
+
+/* ───────────────────────────────────────────── */
+/* Role Badge */
+/* ───────────────────────────────────────────── */
+
+const roleBadgeStyle: Record<
+  Role,
+  string
+> = {
+  admin:
+    "bg-rose-500/10 text-rose-400 border border-rose-500/20",
+
+  editor:
+    "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+
+  viewer:
+    "bg-slate-500/10 text-slate-400 border border-slate-500/20",
 };
 
-const TYPE_META: Record<FormType, { label: string; icon: React.ReactNode; color: string }> = {
-  delegate: { label: "Delegate", icon: <Users size={13} />, color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30" },
-  sponsor: { label: "Sponsor", icon: <Handshake size={13} />, color: "text-purple-400 bg-purple-400/10 border-purple-400/30" },
-  brochure: { label: "Brochure", icon: <FileText size={13} />, color: "text-amber-400 bg-amber-400/10 border-amber-400/30" },
-  nomination: { label: "Nomination", icon: <Trophy size={13} />, color: "text-rose-400 bg-rose-400/10 border-rose-400/30" },
-};
+/* ───────────────────────────────────────────── */
+/* Sidebar Button */
+/* ───────────────────────────────────────────── */
 
-/* ─────────────────────────────────────────────────────────────
-   SMALL COMPONENTS
-───────────────────────────────────────────────────────────── */
-function Badge({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${className}`}>
-      {children}
-    </span>
-  );
-}
-
-function StatCard({
-  icon, label, value, sub, color,
-}: { icon: React.ReactNode; label: string; value: number; sub?: string; color: string }) {
-  return (
-    <div className="bg-[#06111f] border border-cyan-500/10 rounded-xl p-5 flex items-center gap-4">
-      <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${color}`}>{icon}</div>
-      <div>
-        <p className="text-slate-400 text-xs uppercase tracking-wider font-semibold">{label}</p>
-        <p className="text-2xl font-bold text-white">{value}</p>
-        {sub && <p className="text-xs text-slate-500 mt-0.5">{sub}</p>}
-      </div>
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────
-   LEAD DETAIL DRAWER
-───────────────────────────────────────────────────────────── */
-function LeadDrawer({
-  lead,
-  onClose,
-  onStatusChange,
-  onNotesSave,
-  onDelete,
+function SidebarButton({
+  icon,
+  label,
+  active,
+  onClick,
+  badge,
 }: {
-  lead: Lead;
-  onClose: () => void;
-  onStatusChange: (id: string, status: LeadStatus) => Promise<void>;
-  onNotesSave: (id: string, notes: string) => Promise<void>;
-  onDelete: (id: string) => Promise<void>;
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+  onClick: () => void;
+  badge?: React.ReactNode;
 }) {
-  const [notes, setNotes] = useState(lead.notes);
-  const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-
-  const [generatedLead, setGeneratedLead] = useState<any>(null);
-  const [sending, setSending] = useState(false);
-
-  const tm = TYPE_META[lead.formType];
-  const sm = STATUS_META[lead.status];
-
-  const company =
-    lead.organizationCompanyName ??
-    lead.companyName ??
-    lead.companyOrganizationName ?? "—";
-
-  const industry =
-    lead.industry ?? lead.sponsorIndustry ?? lead.brochureIndustry ?? "—";
-
-  const rows: [string, React.ReactNode][] = [
-    ["Email", <a key="e" href={`mailto:${lead.workEmailAddress}`} className="text-cyan-400 hover:underline">{lead.workEmailAddress}</a>],
-    ["Phone", lead.mobileNumber],
-    ["Company", company],
-    ["Industry", industry],
-  ];
-
-  if (lead.linkedInProfileUrl)
-    rows.push(["LinkedIn", <a key="li" href={lead.linkedInProfileUrl} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline truncate max-w-[200px] inline-block">{lead.linkedInProfileUrl}</a>]);
-  if (lead.headquartersLocation) rows.push(["Location", lead.headquartersLocation]);
-  if (lead.websiteUrl) rows.push(["Website", <a key="ws" href={lead.websiteUrl} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">{lead.websiteUrl}</a>]);
-  if (lead.countryRegion) rows.push(["Country", lead.countryRegion]);
-  if (lead.companySize ?? lead.brochureCompanySize) rows.push(["Company Size", lead.companySize ?? lead.brochureCompanySize ?? "—"]);
-  if (lead.nomineeName) rows.push(["Nominee", `${lead.nomineeName} · ${lead.nomineeTitle ?? ''}`])
-  if (lead.nomineeCompany) rows.push(["Nominee Company", lead.nomineeCompany])
-
-  const chips: [string, string[] | undefined][] = [
-    ["Key Areas", lead.keyAreasOfInterest],
-    ["Objectives", lead.lookingToAchieve],
-    ["Gala Dinner", lead.galaDinner],
-    ["Sponsorship Goals", lead.keyObjectives],
-    ["Target Audience", lead.targetAudience],
-    ["Sponsorship Tier", lead.sponsorshipCategory],
-    ["Add-ons", lead.addOns],
-    ["Activation Plans", lead.activationPlans],
-    ["Interested In", lead.interestedIn],
-    ["Scheduled Meetings", lead.scheduledMeetings],
-    ["VIP Dinner", lead.vipDinner],
-  ].filter(([, v]) => v && v.length > 0) as [string, string[]][];
-
-  const handleWhatsApp = () => {
-    const message = `
-New Lead Details
-
-Name: ${lead.fullName}
-Job Title: ${lead.jobTitle}
-Email: ${lead.workEmailAddress}
-Phone: ${lead.mobileNumber}
-
-Company: ${lead.organizationCompanyName ??
-      lead.companyName ??
-      lead.companyOrganizationName ??
-      "N/A"
-      }
-
-Industry: ${lead.industry ??
-      lead.sponsorIndustry ??
-      lead.brochureIndustry ??
-      "N/A"
-      }
-
-Lead Type: ${lead.formType}
-Status: ${lead.status}
-
-Submitted: ${new Date(lead.submittedAt).toLocaleString()}
-`;
-
-    const encodedMessage = encodeURIComponent(message);
-
-    window.open(
-      `https://wa.me/918431429127?text=${encodedMessage}`,
-      "_blank"
-    );
-  };
-
-  const sendBadgeEmail = async () => {
-
-    if (!generatedLead) return;
-
-    try {
-
-      setSending(true);
-
-      const res = await fetch("/api/send-badge-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          leadId: generatedLead.id,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        alert("Badge Email Sent Successfully");
-      } else {
-        alert(data.message);
-      }
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert("Failed to send email");
-
-    } finally {
-
-      setSending(false);
-
-    }
-  };
-
-  const generateBadge = async () => {
-
-    try {
-
-      const res = await fetch("/api/badge", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          leadId: lead.id,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-
-        setGeneratedLead(data.lead);
-
-      } else {
-
-        alert(data.message);
-
-      }
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert("Failed to generate badge");
-
-    }
-  };
-
-  const resetCheckIn = async () => {
-
-    try {
-
-      const res = await fetch("/api/reset-check-in", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          leadId: lead.id,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-
-        alert("Check-In Reset");
-
-        window.location.reload();
-
-      } else {
-
-        alert(data.message);
-
-      }
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert("Failed to reset");
-    }
-  };
 
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex justify-end"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <button
+      onClick={onClick}
+      className={`
+        w-full
+        flex
+        items-center
+        gap-3
+        px-3
+        py-2.5
+        rounded-xl
+        transition-all
+        text-sm
+
+        ${
+          active
+            ? "bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-medium"
+            : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+        }
+      `}
     >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <motion.aside
-        className="relative z-10 w-full max-w-lg h-full bg-[#06111f] border-l border-cyan-500/20 flex flex-col overflow-hidden"
-        initial={{ x: "100%" }}
-        animate={{ x: 0 }}
-        exit={{ x: "100%" }}
-        transition={{ type: "spring", damping: 28, stiffness: 280 }}
+      <span
+        className={
+          active
+            ? "text-cyan-400"
+            : "text-slate-500"
+        }
       >
-        {/* Header */}
-        <div className="shrink-0 px-6 pt-6 pb-4 border-b border-cyan-500/15">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <Badge className={tm.color}>{tm.icon} {tm.label}</Badge>
-                <Badge className={sm.color}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${sm.dot}`} />
-                  {sm.label}
-                </Badge>
-              </div>
-              <h2 className="text-lg font-bold text-white">{lead.fullName}</h2>
-              <p className="text-sm text-slate-400">{lead.jobTitle} · {company}</p>
-            </div>
-            <button onClick={onClose} className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all">
-              <X size={18} />
-            </button>
-          </div>
-          <p className="text-xs text-slate-600 mt-2 flex items-center gap-1.5">
-            <Calendar size={11} />
-            {new Date(lead.submittedAt).toLocaleString("en-AE", { timeZone: "Asia/Dubai", dateStyle: "medium", timeStyle: "short" })} GST
-          </p>
-        </div>
+        {icon}
+      </span>
 
-        {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+      <span className="flex-1 text-left">
+        {label}
+      </span>
 
-          {/* Status change */}
-          <div>
-            <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-wider mb-2">Update Status</p>
-            <div className="flex flex-wrap gap-2">
-              {(Object.keys(STATUS_META) as LeadStatus[]).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => onStatusChange(lead.id, s)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${lead.status === s
-                    ? STATUS_META[s].color + " ring-1 ring-inset ring-current"
-                    : "text-slate-500 border-slate-700 hover:border-slate-500 bg-white/5"
-                    }`}
-                >
-                  {STATUS_META[s].label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Details table */}
-          <div>
-            <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-wider mb-2">Details</p>
-            <table className="w-full text-sm">
-              <tbody>
-                {rows.map(([label, value]) => (
-                  <tr key={label} className="border-b border-white/5 last:border-0">
-                    <td className="py-2 pr-4 text-slate-500 font-medium whitespace-nowrap w-28">{label}</td>
-                    <td className="py-2 text-slate-200 break-words">{value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Chip groups */}
-          {chips.length > 0 && (
-            <div className="space-y-4">
-              {chips.map(([label, items]) => (
-                <div key={label}>
-                  <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-wider mb-1.5">
-                    {label}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5">
-                    {(items ?? []).map((item) => (
-                      <span
-                        key={item}
-                        className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-slate-300"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Achievement details — shown only for nominations */}
-          {lead.formType === 'nomination' && (
-            <div className="space-y-4">
-              {[
-                { label: 'Achievement Summary', value: lead.achievementSummary },
-                { label: 'Innovation', value: lead.innovation },
-                { label: 'Measurable Impact', value: lead.impact },
-              ].filter(f => f.value).map(({ label, value }) => (
-                <div key={label}>
-                  <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-wider mb-1.5">{label}</p>
-                  <p className="text-sm text-slate-300 bg-white/5 rounded-lg p-3 border border-white/10 leading-relaxed">{value}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Custom requests */}
-          {lead.customRequests && (
-            <div>
-              <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-wider mb-1.5">Custom Requests</p>
-              <p className="text-sm text-slate-300 bg-white/5 rounded-lg p-3 border border-white/10">{lead.customRequests}</p>
-            </div>
-          )}
-
-          {/* Internal notes */}
-          <div>
-            <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <StickyNote size={11} /> Internal Notes
-            </p>
-            <textarea
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              placeholder="Add notes visible only to the admin team…"
-              rows={4}
-              className="w-full bg-[#0a1628]/60 border border-cyan-500/20 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 resize-none transition-all"
-            />
-            <button
-              onClick={async () => { setSaving(true); await onNotesSave(lead.id, notes); setSaving(false); }}
-              disabled={saving || notes === lead.notes}
-              className="mt-2 px-4 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 text-xs font-semibold border border-cyan-500/30 hover:bg-cyan-500/30 disabled:opacity-40 transition-all"
-            >
-              {saving ? "Saving…" : "Save Notes"}
-            </button>
-          </div>
-        </div>
-
-        {/* Footer actions */}
-        <div className="shrink-0 px-6 py-4 border-t border-white/5 flex flex-wrap gap-3 justify-between items-center">
-          <div className="flex items-center gap-2">
-            <a
-              href={`mailto:${lead.workEmailAddress}`}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 text-sm font-semibold border border-cyan-500/20 hover:bg-cyan-500/20 transition-all"
-            >
-              <Mail size={14} /> Reply
-            </a>
-
-            <button
-              onClick={generateBadge}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/10 text-purple-400 text-sm font-semibold border border-purple-500/20 hover:bg-purple-500/20 transition-all"
-            >
-              🎟 Generate Badge
-            </button>
-            {lead.checkedIn && (
-              <button
-                onClick={resetCheckIn}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-400 text-sm font-semibold border border-yellow-500/20 hover:bg-yellow-500/20 transition-all"
-              >
-                Reset Check-In
-              </button>
-            )}
-
-            <button
-              onClick={handleWhatsApp}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 text-green-400 text-sm font-semibold border border-green-500/20 hover:bg-green-500/20 transition-all"
-            >
-              <MessageCircle size={14} />
-              WhatsApp
-            </button>
-          </div>
-          {!confirmDelete ? (
-            <button
-              onClick={() => setConfirmDelete(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-red-400 text-sm font-semibold border border-red-500/20 hover:bg-red-500/10 transition-all"
-            >
-              <Trash2 size={14} /> Delete
-            </button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-red-400">Sure?</span>
-              <button
-                onClick={async () => { setDeleting(true); await onDelete(lead.id); }}
-                disabled={deleting}
-                className="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 text-xs font-semibold border border-red-500/30 hover:bg-red-500/30 disabled:opacity-50 transition-all"
-              >
-                {deleting ? "Deleting…" : "Yes, Delete"}
-              </button>
-              <button onClick={() => setConfirmDelete(false)} className="px-3 py-1.5 rounded-lg text-slate-400 text-xs border border-slate-600 hover:bg-white/5 transition-all">
-                Cancel
-              </button>
-            </div>
-          )}
-        </div>
-        {generatedLead && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
-
-            <div className="bg-[#06111f] border border-cyan-500/20 rounded-2xl p-6 max-w-lg w-full max-h-[95vh] overflow-y-auto relative">
-              <button
-                onClick={() => setGeneratedLead(null)}
-                className="absolute top-4 right-4 text-slate-400 hover:text-white"
-              >
-                ✕
-              </button>
-
-              <h2 className="text-xl font-bold text-white mb-6 text-center">
-                Badge Generated
-              </h2>
-
-              <div className="flex justify-center">
-                <PrintBadge lead={generatedLead} />
-              </div>
-
-              <button
-                onClick={sendBadgeEmail}
-                disabled={sending}
-                className="w-full mt-6 bg-cyan-500 hover:bg-cyan-400 transition-all text-white py-3 rounded-xl font-semibold"
-              >
-                {sending ? "Sending..." : "Send Badge Email"}
-              </button>
-
-            </div>
-
-          </div>
-        )}
-      </motion.aside>
-    </motion.div>
+      {badge}
+    </button>
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CSV EXPORT
-───────────────────────────────────────────────────────────── */
-function exportCSV(leads: Lead[]) {
-  const cols = [
-    "formType", "status", "submittedAt", "fullName", "jobTitle", "workEmailAddress", "mobileNumber",
-    "organizationCompanyName", "companyName", "companyOrganizationName", "industry", "sponsorIndustry",
-    "brochureIndustry", "headquartersLocation", "countryRegion", "companySize", "brochureCompanySize",
-    "websiteUrl", "linkedInProfileUrl", "keyAreasOfInterest", "lookingToAchieve", "keyObjectives",
-    "targetAudience", "sponsorshipCategory", "addOns", "interestedIn", "customRequests", "notes",
-  ];
-  const header = cols.join(",");
-  const rows = leads.map(l =>
-    cols.map(c => {
-      const val = l[c as keyof Lead];
-      if (Array.isArray(val)) return `"${val.join("; ")}"`;
-      if (typeof val === "string" && val.includes(",")) return `"${val}"`;
-      return val ?? "";
-    }).join(",")
-  );
-  const csv = [header, ...rows].join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `leads_${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
+/* ───────────────────────────────────────────── */
+/* Component */
+/* ───────────────────────────────────────────── */
 
-/* ─────────────────────────────────────────────────────────────
-   MAIN ADMIN PAGE
-───────────────────────────────────────────────────────────── */
-export default function AdminPage() {
-  const router = useRouter();
+export default function AdminPanel() {
 
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [stats, setStats] = useState<Stats>({ total: 0, byType: {}, byStatus: {} });
-  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 20, total: 0, pages: 1 });
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState<FormType | "">("");
-  const [filterStatus, setFilterStatus] = useState<LeadStatus | "">("");
-  const [filterBadgeSent, setFilterBadgeSent] = useState("");
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [page, setPage] = useState(1);
-  const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const role = CURRENT_ROLE;
 
-  /* ── Fetch leads ───────────────────────────────────────── */
-  const fetchLeads = useCallback(async (opts?: { p?: number; q?: string }) => {
-    setLoading(true);
-    try {
-      const p = opts?.p ?? page;
-      const q = opts?.q ?? search;
-      const params = new URLSearchParams({
-        page: String(p),
-        limit: "20",
-        formType: filterType,
-        status: filterStatus,
-        badgeSent: filterBadgeSent,
-        search: q,
-        sort: "-submittedAt",
-      });
-      const res = await fetch(`/api/admin/leads?${params}`);
-      if (res.status === 401) { router.push("/admin/login"); return; }
-      const json = await res.json();
-      setLeads(json.leads ?? []);
-      setStats(json.stats ?? { total: 0, byType: {}, byStatus: {} });
-      setPagination(json.pagination ?? { page: 1, limit: 20, total: 0, pages: 1 });
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
+  const [activePage, setActivePage] =
+    useState<string>("dashboard");
+
+  const [leadFilter, setLeadFilter] =
+    useState<LeadFilter>("");
+
+  const [leadsOpen, setLeadsOpen] =
+    useState(false);
+
+  /* Dashboard Stats */
+
+  const [stats, setStats] =
+    useState<Stats>({
+      total: 0,
+
+      byType: {},
+
+      byStatus: {},
+    });
+
+  useEffect(() => {
+
+    const fetchStats =
+      async () => {
+
+        try {
+
+          const res =
+            await fetch(
+              "/api/admin/leads?page=1&limit=1"
+            );
+
+          const data =
+            await res.json();
+
+          setStats(
+            data.stats || {
+              total: 0,
+              byType: {},
+              byStatus: {},
+            }
+          );
+
+        } catch (error) {
+
+          console.error(error);
+        }
+      };
+
+    fetchStats();
+
+  }, []);
+
+  /* Logic */
+
+  const leadsActive =
+    activePage === "leads";
+
+  const handleMenuClick = (
+    key: string
+  ) => {
+
+    if (key === "leads") {
+
+      setLeadsOpen((o) => !o);
+
+      if (!leadsActive) {
+
+        setActivePage("leads");
+
+        setLeadFilter("");
+      }
+
+    } else {
+
+      setActivePage(key);
+
+      setLeadsOpen(false);
     }
-  }, [page, search, filterType, filterStatus, router]);
-
-  useEffect(() => { fetchLeads(); }, [fetchLeads]);
-
-  /* ── Debounced search ──────────────────────────────────── */
-  const handleSearch = (q: string) => {
-    setSearch(q);
-    if (searchRef.current) {
-      clearTimeout(searchRef.current);
-    }
-    searchRef.current = setTimeout(() => { setPage(1); fetchLeads({ p: 1, q }); }, 500);
   };
 
-  /* ── Actions ───────────────────────────────────────────── */
-  const handleStatusChange = async (id: string, status: LeadStatus) => {
-    await fetch("/api/admin/leads", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, status }) });
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-    if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, status } : null);
+  const handleSubItemClick = (
+    sub: SubItem
+  ) => {
+
+    setActivePage("leads");
+
+    setLeadFilter(sub.filter);
   };
 
-  const handleNotesSave = async (id: string, notes: string) => {
-    await fetch("/api/admin/leads", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, notes }) });
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, notes } : l));
-    if (selectedLead?.id === id) setSelectedLead(prev => prev ? { ...prev, notes } : null);
-  };
-
-  const handleDelete = async (id: string) => {
-    await fetch("/api/admin/leads", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
-    setLeads(prev => prev.filter(l => l.id !== id));
-    setSelectedLead(null);
-    fetchLeads();
-  };
-
-  const handleLogout = async () => {
-    await fetch("/api/admin/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "logout" }) });
-    router.push("/admin/login");
-  };
-
-  /* ─────────────────────────────────────────────────────── */
   return (
-    <div className="min-h-screen bg-[#020810] text-white" style={{ backgroundImage: "radial-gradient(ellipse at 50% 0%,#0a2540 0%,#020810 60%)" }}>
+    <div className="flex min-h-screen bg-[#020810] text-white">
 
-      {/* Grid overlay */}
-      <div className="fixed inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(56,189,248,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,0.025) 1px,transparent 1px)", backgroundSize: "48px 48px" }} />
+      {/* Sidebar */}
 
-      {/* ── NAV ── */}
-      <nav className="sticky top-0 z-30 border-b border-cyan-500/10 bg-[#020810]/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <ShieldCheck size={20} className="text-cyan-400" />
+      <aside className="w-[260px] shrink-0 border-r border-cyan-500/10 bg-[#06111f] flex flex-col p-4 gap-1">
+
+        {/* Logo */}
+
+        <h1 className="text-xl font-bold text-cyan-400 mb-4 px-2">
+          Admin CMS
+        </h1>
+
+        {/* Role */}
+
+        <div
+          className={`
+            flex
+            items-center
+            gap-2
+            px-3
+            py-1.5
+            rounded-lg
+            mb-3
+
+            ${roleBadgeStyle[role]}
+          `}
+        >
+          <Shield size={14} />
+
+          <span className="text-xs font-medium capitalize">
+            Role: {role}
+          </span>
+        </div>
+
+        {/* Menu */}
+
+        <nav className="flex flex-col gap-0.5 flex-1">
+
+          {MENU
+            .filter((item) =>
+              item.allowedRoles.includes(
+                role
+              )
+            )
+            .map((item) => {
+
+              const hasChildren =
+                !!item.children?.length;
+
+              const isActive =
+                activePage === item.key &&
+                !hasChildren;
+
+              const isParentActive =
+                activePage === item.key &&
+                hasChildren;
+
+              return (
+                <div key={item.key}>
+
+                  <SidebarButton
+                    icon={item.icon}
+                    label={item.label}
+                    active={
+                      isParentActive ||
+                      isActive
+                    }
+                    onClick={() =>
+                      handleMenuClick(
+                        item.key
+                      )
+                    }
+                    badge={
+                      hasChildren ? (
+                        <span className="text-slate-500">
+                          {leadsOpen ? (
+                            <ChevronDown
+                              size={14}
+                            />
+                          ) : (
+                            <ChevronRight
+                              size={14}
+                            />
+                          )}
+                        </span>
+                      ) : undefined
+                    }
+                  />
+
+                  {/* Sub Menu */}
+
+                  <AnimatePresence initial={false}>
+
+                    {hasChildren &&
+                      leadsOpen && (
+
+                        <motion.div
+                          initial={{
+                            height: 0,
+                            opacity: 0,
+                          }}
+                          animate={{
+                            height: "auto",
+                            opacity: 1,
+                          }}
+                          exit={{
+                            height: 0,
+                            opacity: 0,
+                          }}
+                          transition={{
+                            duration: 0.2,
+                          }}
+                          className="overflow-hidden"
+                        >
+
+                          <div className="ml-4 mt-0.5 pl-3 border-l border-cyan-500/10 flex flex-col gap-0.5 py-1">
+
+                            {item.children!
+                              .filter((sub) =>
+                                sub.allowedRoles.includes(
+                                  role
+                                )
+                              )
+                              .map((sub) => {
+
+                                const subActive =
+                                  activePage ===
+                                    "leads" &&
+                                  leadFilter ===
+                                    sub.filter;
+
+                                return (
+                                  <button
+                                    key={sub.key}
+                                    onClick={() =>
+                                      handleSubItemClick(
+                                        sub
+                                      )
+                                    }
+                                    className={`
+                                      flex
+                                      items-center
+                                      gap-2
+                                      px-3
+                                      py-2
+                                      rounded-lg
+                                      text-xs
+                                      transition-all
+                                      text-left
+
+                                      ${
+                                        subActive
+                                          ? "bg-cyan-500/10 text-cyan-300 border border-cyan-500/15 font-medium"
+                                          : "text-slate-400 hover:bg-white/5 hover:text-slate-300"
+                                      }
+                                    `}
+                                  >
+                                    <span>
+                                      {sub.icon}
+                                    </span>
+
+                                    <span>
+                                      {sub.label}
+                                    </span>
+                                  </button>
+                                );
+                              })}
+                          </div>
+
+                        </motion.div>
+                      )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+        </nav>
+
+        {/* Logout */}
+
+        <div className="border-t border-cyan-500/10 pt-3 mt-2">
+
+          <button
+            onClick={async () => {
+
+              await fetch(
+                "/api/admin/auth",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type":
+                      "application/json",
+                  },
+                  body: JSON.stringify({
+                    action:
+                      "logout",
+                  }),
+                }
+              );
+
+              window.location.href =
+                "/admin/login";
+            }}
+            className="
+              w-full
+              flex
+              items-center
+              gap-3
+              px-3
+              py-2.5
+              rounded-xl
+              text-sm
+              text-rose-400
+              hover:bg-rose-500/10
+              transition-all
+            "
+          >
+            <LogOut size={16} />
+
+            Logout
+          </button>
+        </div>
+      </aside>
+
+      {/* Main */}
+
+      <main className="flex-1 overflow-y-auto">
+
+        {/* Dashboard */}
+
+        {activePage ===
+          "dashboard" && (
+
+          <div className="p-8 space-y-8">
+
             <div>
-              <span className="font-bold text-white text-sm">Admin Panel</span>
-              <span className="hidden sm:inline text-slate-600 text-sm"> · IoT Security World Summit 2026</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <button onClick={() => fetchLeads()} className="p-2 rounded-lg text-slate-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all">
-              <RefreshCw size={15} />
-            </button>
-            <button
-              onClick={() => exportCSV(leads)}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 border border-slate-700 hover:border-cyan-500/40 hover:text-cyan-400 transition-all"
-            >
-              <Download size={13} /> Export CSV
-            </button>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 border border-slate-700 hover:border-red-500/40 hover:text-red-400 transition-all"
-            >
-              <LogOut size={13} /> Logout
-            </button>
-          </div>
-        </div>
-      </nav>
+              <h1 className="text-3xl font-bold mb-2">
+                Dashboard
+              </h1>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6 relative z-10">
-
-        {/* ── STATS ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <StatCard icon={<TrendingUp size={20} className="text-cyan-400" />} label="Total Leads" value={stats.total} color="bg-cyan-400/10" />
-          <StatCard icon={<Users size={20} className="text-cyan-400" />} label="Delegates" value={stats.byType.delegate ?? 0} sub={`${stats.byStatus.new ?? 0} new`} color="bg-cyan-400/10" />
-          <StatCard icon={<Handshake size={20} className="text-purple-400" />} label="Sponsors" value={stats.byType.sponsor ?? 0} sub={`${stats.byStatus.converted ?? 0} converted`} color="bg-purple-400/10" />
-          <StatCard icon={<FileText size={20} className="text-amber-400" />} label="Brochures" value={stats.byType.brochure ?? 0} color="bg-amber-400/10" />
-          <StatCard
-            icon={<Trophy size={20} className="text-rose-400" />}
-            label="Nominations"
-            value={stats.byType.nomination ?? 0}
-            color="bg-rose-400/10"
-          />
-        </div>
-
-        {/* ── FILTERS ── */}
-        <div className="bg-[#06111f] border border-cyan-500/10 rounded-xl p-4">
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
-            <div className="relative flex-1">
-              <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-              <input
-                type="text"
-                value={search}
-                onChange={e => handleSearch(e.target.value)}
-                placeholder="Search by name, email, company…"
-                className="w-full bg-[#0a1628]/60 border border-cyan-500/20 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition-all"
-              />
-            </div>
-
-            {/* Type filter */}
-            <div className="relative">
-              <select
-                value={filterType}
-                onChange={e => { setFilterType(e.target.value as FormType | ""); setPage(1); }}
-                className="appearance-none bg-[#0a1628]/60 border border-cyan-500/20 rounded-lg pl-3 pr-8 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 transition-all"
-              >
-                <option value="">All Types</option>
-                <option value="delegate">Delegate</option>
-                <option value="sponsor">Sponsor</option>
-                <option value="brochure">Brochure</option>
-                <option value="nomination">Nomination</option>
-              </select>
-              <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
-            </div>
-
-            {/* Status filter */}
-            <div className="relative">
-              <select
-                value={filterStatus}
-                onChange={e => { setFilterStatus(e.target.value as LeadStatus | ""); setPage(1); }}
-                className="appearance-none bg-[#0a1628]/60 border border-cyan-500/20 rounded-lg pl-3 pr-8 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 transition-all"
-              >
-                <option value="">All Statuses</option>
-                <option value="new">New</option>
-                <option value="contacted">Contacted</option>
-                <option value="converted">Converted</option>
-                <option value="rejected">Rejected</option>
-              </select>
-              <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
-            </div>
-            <div className="relative">
-              <select
-                value={filterBadgeSent}
-                onChange={(e) => {
-                  setFilterBadgeSent(e.target.value);
-                  setPage(1);
-                }}
-                className="appearance-none bg-[#0a1628]/60 border border-cyan-500/20 rounded-lg pl-3 pr-8 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 transition-all"
-              >
-                <option value="">All Badges</option>
-                <option value="sent">Sent</option>
-                <option value="pending">Pending</option>
-              </select>
-
-              <ChevronDown
-                size={13}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* ── TABLE ── */}
-        <div className="bg-[#06111f] border border-cyan-500/10 rounded-xl overflow-hidden">
-          <div className="px-5 py-3 border-b border-cyan-500/10 flex items-center justify-between">
-            <p className="text-xs text-slate-500">
-              {loading ? "Loading…" : `${pagination.total} lead${pagination.total !== 1 ? "s" : ""} found`}
-            </p>
-            <button onClick={() => exportCSV(leads)} className="sm:hidden flex items-center gap-1 text-xs text-slate-500 hover:text-cyan-400 transition-colors">
-              <Download size={12} /> Export
-            </button>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/5 text-xs text-slate-500 uppercase tracking-wider">
-                  <th className="text-left px-4 py-3 font-semibold">Name</th>
-                  <th className="text-left px-4 py-3 font-semibold hidden md:table-cell">Contact</th>
-                  <th className="text-left px-4 py-3 font-semibold hidden lg:table-cell">Company</th>
-                  <th className="text-left px-4 py-3 font-semibold">Type</th>
-                  <th className="text-left px-4 py-3 font-semibold">Status</th>
-                  <th className="text-left px-4 py-3 font-semibold">
-                    Check-In
-                  </th>
-                  <th className="text-left px-4 py-3 font-semibold">
-                    Badge
-                  </th>
-                  <th className="text-left px-4 py-3 font-semibold hidden sm:table-cell">Date</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i} className="border-b border-white/5 animate-pulse">
-                      {Array.from({ length: 7 }).map((__, j) => (
-                        <td key={j} className="px-4 py-3"><div className="h-4 bg-white/5 rounded" /></td>
-                      ))}
-                    </tr>
-                  ))
-                ) : leads.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="px-4 py-16 text-center">
-                      <div className="flex flex-col items-center gap-3 text-slate-600">
-                        <AlertTriangle size={32} />
-                        <p className="text-sm">No leads found. Try adjusting your filters.</p>
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  leads.map(lead => {
-                    const tm = TYPE_META[lead.formType];
-                    const sm = STATUS_META[lead.status];
-                    const company = lead.organizationCompanyName ?? lead.companyName ?? lead.companyOrganizationName ?? "—";
-                    return (
-                      <motion.tr
-                        key={lead.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="border-b border-white/5 hover:bg-white/3 cursor-pointer transition-colors group"
-                        onClick={() => setSelectedLead(lead)}
-                      >
-                        <td className="px-4 py-3">
-                          <p className="font-semibold text-white group-hover:text-cyan-300 transition-colors">{lead.fullName}</p>
-                          <p className="text-xs text-slate-500">{lead.jobTitle}</p>
-                        </td>
-                        <td className="px-4 py-3 hidden md:table-cell">
-                          <p className="text-slate-300 text-xs">{lead.workEmailAddress}</p>
-                          <p className="text-slate-500 text-xs">{lead.mobileNumber}</p>
-                        </td>
-                        <td className="px-4 py-3 hidden lg:table-cell text-slate-400 text-xs">{company}</td>
-                        <td className="px-4 py-3">
-                          <Badge className={tm.color}>{tm.icon} {tm.label}</Badge>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge className={sm.color}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${sm.dot}`} />
-                            {sm.label}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3">
-                          {lead.checkedIn ? (
-                            <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-xs border border-green-500/20">
-                              Checked-In
-                            </span>
-                          ) : (
-                            <span className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-400 text-xs border border-yellow-500/20">
-                              Pending
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3">
-                          {lead.badgeSent ? (
-                            <span className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs border border-cyan-500/20">
-                              Sent
-                            </span>
-                          ) : (
-                            <span className="px-3 py-1 rounded-full bg-slate-500/10 text-slate-400 text-xs border border-slate-500/20">
-                              Pending
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 hidden sm:table-cell text-slate-500 text-xs whitespace-nowrap">
-                          {new Date(lead.submittedAt).toLocaleDateString("en-AE", { day: "2-digit", month: "short", year: "numeric" })}
-                        </td>
-                        <td className="px-4 py-3">
-                          <Eye size={14} className="text-slate-600 group-hover:text-cyan-400 transition-colors" />
-                        </td>
-                      </motion.tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          {pagination.pages > 1 && (
-            <div className="px-4 py-3 border-t border-white/5 flex items-center justify-between">
-              <p className="text-xs text-slate-500">
-                Page {pagination.page} of {pagination.pages} · {pagination.total} total
+              <p className="text-slate-400">
+                Welcome to the admin panel.
               </p>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => { const p = page - 1; setPage(p); fetchLeads({ p }); }}
-                  disabled={page <= 1}
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                >
-                  <ChevronLeft size={15} />
-                </button>
-                <button
-                  onClick={() => { const p = page + 1; setPage(p); fetchLeads({ p }); }}
-                  disabled={page >= pagination.pages}
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                >
-                  <ChevronRight size={15} />
-                </button>
-              </div>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* ── LEAD DRAWER ── */}
-      <AnimatePresence>
-        {selectedLead && (
-          <LeadDrawer
-            key={selectedLead.id}
-            lead={selectedLead}
-            onClose={() => setSelectedLead(null)}
-            onStatusChange={handleStatusChange}
-            onNotesSave={handleNotesSave}
-            onDelete={handleDelete}
+            <DashboardStats
+              stats={stats}
+            />
+
+          </div>
+        )}
+
+        {/* Speakers */}
+
+        {activePage ===
+          "speakers" && (
+          <SpeakersCMS />
+        )}
+
+        {/* Partners */}
+
+        {activePage ===
+          "partners" && (
+          <PartnersCMS />
+        )}
+
+        {/* Leads */}
+
+        {activePage ===
+          "leads" && (
+
+          <LeadsPage
+            presetFilter={
+              leadFilter
+            }
+            role={role}
+            canEdit={can(
+              role,
+              "edit"
+            )}
+            canDelete={can(
+              role,
+              "delete"
+            )}
           />
         )}
-      </AnimatePresence>
+      </main>
     </div>
   );
 }

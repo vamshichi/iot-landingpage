@@ -3,7 +3,7 @@ import { jwtVerify } from "jose";
 import { prisma } from "@/lib/prisma";
 import { FormType, LeadStatus, Prisma } from "@prisma/client";
 
-const SECRET      = new TextEncoder().encode(process.env.JWT_SECRET ?? "change-this-to-a-random-32-char-secret!!");
+const SECRET = new TextEncoder().encode(process.env.JWT_SECRET ?? "change-this-to-a-random-32-char-secret!!");
 const COOKIE_NAME = "admin_token";
 
 async function verifyAdmin(req: NextRequest) {
@@ -19,38 +19,54 @@ export async function GET(req: NextRequest) {
   }
 
   const { searchParams } = new URL(req.url);
-  const page      = Math.max(1, Number(searchParams.get("page")  ?? 1));
-  const limit     = Math.min(100, Math.max(1, Number(searchParams.get("limit") ?? 20)));
-  const formType  = searchParams.get("formType") ?? "";
-  const status    = searchParams.get("status")   ?? "";
-  const search    = searchParams.get("search")   ?? "";
-  const sortParam = searchParams.get("sort")     ?? "-submittedAt";
+  const page = Math.max(1, Number(searchParams.get("page") ?? 1));
+  const limit = Math.min(100, Math.max(1, Number(searchParams.get("limit") ?? 20)));
+  const formType = searchParams.get("formType") ?? "";
+  const badgeSent = searchParams.get("badgeSent") ?? "";
+  const checkedIn = searchParams.get("checkedIn") ?? "";
+  const status = searchParams.get("status") ?? "";
+  const search = searchParams.get("search") ?? "";
+  const sortParam = searchParams.get("sort") ?? "-submittedAt";
 
   /* ── Build where clause ── */
   const where: Prisma.LeadWhereInput = {};
 
   if (formType) where.formType = formType as FormType;
-  if (status)   where.status   = status   as LeadStatus;
+  if (status) where.status = status as LeadStatus;
+  if (badgeSent === "sent") {
+    where.badgeSent = true;
+  }
+
+  if (badgeSent === "pending") {
+    where.badgeSent = false;
+  }
+  if (checkedIn === "checkedin") {
+    where.checkedIn = true;
+  }
+
+  if (checkedIn === "pending") {
+    where.checkedIn = false;
+  }
 
   // Prisma MongoDB: use OR + contains for basic search
   // (For production, consider MongoDB Atlas Search via $search)
   if (search) {
     where.OR = [
-      { fullName:              { contains: search, mode: "insensitive" } },
-      { workEmailAddress:      { contains: search, mode: "insensitive" } },
-      { mobileNumber:          { contains: search, mode: "insensitive" } },
-      { companyName:           { contains: search, mode: "insensitive" } },
-      { organizationCompanyName:{ contains: search, mode: "insensitive" } },
-      { companyOrganizationName:{ contains: search, mode: "insensitive" } },
-      { nomineeName:    { contains: search, mode: "insensitive" } },
-    { nomineeCompany: { contains: search, mode: "insensitive" } },
+      { fullName: { contains: search, mode: "insensitive" } },
+      { workEmailAddress: { contains: search, mode: "insensitive" } },
+      { mobileNumber: { contains: search, mode: "insensitive" } },
+      { companyName: { contains: search, mode: "insensitive" } },
+      { organizationCompanyName: { contains: search, mode: "insensitive" } },
+      { companyOrganizationName: { contains: search, mode: "insensitive" } },
+      { nomineeName: { contains: search, mode: "insensitive" } },
+      { nomineeCompany: { contains: search, mode: "insensitive" } },
     ];
   }
 
   /* ── Build orderBy ── */
-  const isDesc   = sortParam.startsWith("-");
-  const sortKey  = sortParam.replace(/^-/, "") as keyof Prisma.LeadOrderByWithRelationInput;
-  const orderBy  = { [sortKey]: isDesc ? "desc" : "asc" } as Prisma.LeadOrderByWithRelationInput;
+  const isDesc = sortParam.startsWith("-");
+  const sortKey = sortParam.replace(/^-/, "") as keyof Prisma.LeadOrderByWithRelationInput;
+  const orderBy = { [sortKey]: isDesc ? "desc" : "asc" } as Prisma.LeadOrderByWithRelationInput;
 
   /* ── Run queries in parallel ── */
   const [leads, total, byTypeRaw, byStatusRaw] = await Promise.all([
@@ -73,7 +89,7 @@ export async function GET(req: NextRequest) {
     }),
   ]);
 
-  const byType: Record<string, number>   = {};
+  const byType: Record<string, number> = {};
   const byStatus: Record<string, number> = {};
   let grandTotal = 0;
 
@@ -99,15 +115,15 @@ export async function PATCH(req: NextRequest) {
   }
 
   const { id, status, notes } = (await req.json()) as {
-    id     : string;
+    id: string;
     status?: string;
-    notes ?: string;
+    notes?: string;
   };
 
   if (!id) return NextResponse.json({ error: "Missing id." }, { status: 400 });
 
   const data: Prisma.LeadUpdateInput = {};
-  if (status)           data.status = status as LeadStatus;
+  if (status) data.status = status as LeadStatus;
   if (notes !== undefined) data.notes = notes;
 
   try {
