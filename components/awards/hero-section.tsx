@@ -108,7 +108,7 @@ export function HeroSection() {
           >
             <div className="flex items-center gap-2">
               <CalendarDays className="w-5 h-5 text-primary" />
-              <span className="text-lg font-medium">23rd July 2026</span>
+              <span className="text-lg font-medium">10th September 2026</span>
             </div>
 
             <div className="hidden sm:block w-px h-6 bg-primary/30" />
