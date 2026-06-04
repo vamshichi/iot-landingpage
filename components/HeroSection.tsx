@@ -15,8 +15,7 @@ export default function HeroSection() {
 
   useEffect(() => {
     // Abu Dhabi timezone (UTC+4)
-    const targetDate = new Date("2026-07-23T00:00:00+04:00").getTime();
-
+   const targetDate = new Date("2026-09-10T00:00:00+04:00").getTime();
     const timer = setInterval(() => {
       const now = new Date().getTime();
       const difference = targetDate - now;
