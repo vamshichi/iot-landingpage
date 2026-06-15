@@ -36,6 +36,24 @@ const speakers = [
     company: "Al Nabooda Automobiles LLC",
     image: "/speakers/Ebrahim Kamalzadeh.jpg",
   },
+  {
+    name: "Dr. Batheiah Bolisetti",
+    role: "Head - IT & CISO",
+    company: "Embassy Developments Limited",
+    image: "/speakers/Dr. Batheiah Bolisetti.jpg",
+  },
+  {
+    name: "Parthasarathy P",
+    role: "EVP & Group CISO",
+    company: "Leading Bank in GCC",
+    image: "/speakers/Parthasarathy P.jpg",
+  },
+  {
+    name: "George Akhras",
+    role: "CIO",
+    company: "Academia Management Solutions International (AMSI)",
+    image: "/speakers/George.jpg",
+  }
 ];
 
 export function SpeakersSection() {
