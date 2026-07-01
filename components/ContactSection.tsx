@@ -117,7 +117,7 @@ export function ContactSection() {
     transition={{ delay: 0.4 }}
     viewport={{ once: true }}
   >
-    10th September 2026 | Abu Dhabi
+    24th September 2026 | Abu Dhabi
   </motion.p>
 
   {/* Buttons */}
