@@ -25,12 +25,12 @@ const speakers = [
     image: "/speakers/Dr. Shijin.png",
   },
   {
-  name: "Bravine Otieno",
-  role: "Head of Global Operations & Infrastructure Service- Middle East & Africa Region",
-  company: "DB Schenker",
-  image: "/speakers/Bravine Otieno.jpg",
-},
- {
+    name: "Bravine Otieno",
+    role: "Head of Global Operations & Infrastructure Service- Middle East & Africa Region",
+    company: "DB Schenker",
+    image: "/speakers/Bravine Otieno.jpg",
+  },
+  {
     name: "Ebrahim Kamalzadeh",
     role: "Chief Information Officer",
     company: "Al Nabooda Automobiles LLC",
@@ -40,13 +40,13 @@ const speakers = [
     name: "Dr. Batheiah Bolisetti",
     role: "Head - IT & CISO",
     company: "Embassy Developments Limited",
-    image: "/speakers/Dr. Batheiah Bolisetti.jpg",
+    image: "/speakers/Batheiah.jpg",
   },
   {
     name: "Parthasarathy P",
     role: "EVP & Group CISO",
     company: "Leading Bank in GCC",
-    image: "/speakers/Parthasarathy P.jpg",
+    image: "/speakers/Parthasarathy.jpg",
   },
   {
     name: "George Akhras",
@@ -66,7 +66,7 @@ export function SpeakersSection() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-cyan-500/10 blur-3xl rounded-full" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}

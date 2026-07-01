@@ -13,29 +13,37 @@ export default function HeroSection() {
     seconds: 0,
   });
 
-  useEffect(() => {
-    // Abu Dhabi timezone (UTC+4)
-   const targetDate = new Date("2026-09-10T00:00:00+04:00").getTime();
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const difference = targetDate - now;
+  const EVENT_DATE = new Date("2026-09-24T09:00:00+04:00").getTime();
 
-      if (difference <= 0) {
-        clearInterval(timer);
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
+useEffect(() => {
+  const updateCountdown = () => {
+    const now = Date.now();
+    const difference = EVENT_DATE - now;
 
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((difference / (1000 * 60)) % 60);
-      const seconds = Math.floor((difference / 1000) % 60);
+    if (difference <= 0) {
+      setTimeLeft({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+      });
+      return;
+    }
 
-      setTimeLeft({ days, hours, minutes, seconds });
-    }, 1000);
+    setTimeLeft({
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / (1000 * 60)) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
+    });
+  };
 
-    return () => clearInterval(timer);
-  }, []);
+  updateCountdown(); // Update immediately on page load
+
+  const timer = setInterval(updateCountdown, 1000);
+
+  return () => clearInterval(timer);
+}, []);
 
   return (
     <section id="home" className="relative w-full overflow-hidden">

@@ -4,7 +4,11 @@ import { motion } from 'framer-motion'
 // import { ChevronDown } from 'lucide-react'
 import { CalendarDays, MapPin } from 'lucide-react'
 
+// import { useEffect, useState } from 'react'
+
+
 export function HeroSection() {
+  
   return (
     <section className="relative min-h-screen w-full overflow-hidden pt-24 md:pt-28 lg:pt-32 bg-black">
       {/* Background Video */}
@@ -108,7 +112,7 @@ export function HeroSection() {
           >
             <div className="flex items-center gap-2">
               <CalendarDays className="w-5 h-5 text-primary" />
-              <span className="text-lg font-medium">10th September 2026</span>
+              <span className="text-lg font-medium">24th September 2026</span>
             </div>
 
             <div className="hidden sm:block w-px h-6 bg-primary/30" />
