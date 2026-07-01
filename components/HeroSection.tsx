@@ -94,7 +94,7 @@ export default function HeroSection() {
               visible: { opacity: 1, y: 0 },
             }}
           >
-            10th September 2026 | Abu Dhabi
+            23th September 2026 | Abu Dhabi
           </motion.p>
 
           {/* TAGLINE */}
