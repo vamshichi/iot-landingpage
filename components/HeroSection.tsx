@@ -13,8 +13,7 @@ export default function HeroSection() {
     seconds: 0,
   });
 
-  const EVENT_DATE = new Date("2026-09-24T09:00:00+04:00").getTime();
-
+  const EVENT_DATE = new Date("2026-10-22T09:00:00+04:00").getTime();
 useEffect(() => {
   const updateCountdown = () => {
     const now = Date.now();
@@ -102,7 +101,7 @@ useEffect(() => {
               visible: { opacity: 1, y: 0 },
             }}
           >
-            24th September 2026 | Abu Dhabi
+            22nd October 2026 | Abu Dhabi
           </motion.p>
 
           {/* TAGLINE */}
