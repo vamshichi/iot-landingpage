@@ -188,7 +188,7 @@ export function Footer() {
 
             {/* Left */}
             <p className="text-center md:text-left">
-              © 2026 IoT Security World Summit. All rights reserved.
+              © 2027 IoT Security World Summit. All rights reserved.
             </p>
 
             {/* Right */}

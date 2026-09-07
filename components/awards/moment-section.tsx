@@ -121,7 +121,7 @@ export function MomentOfRecognitionSection() {
           </h2>
 
           <p className="mt-8 text-base sm:text-lg md:text-xl text-white/60 max-w-4xl mx-auto leading-relaxed">
-            The IoT Security Leadership Excellence Awards 2026 will be presented
+            The IoT Security Leadership Excellence Awards 2027 will be presented
             live on stage before an elite gathering of global cybersecurity
             leaders, government authorities, CIOs, CISOs, infrastructure
             operators, and enterprise decision-makers.

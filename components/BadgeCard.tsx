@@ -16,7 +16,7 @@ export default function BadgeCard({ lead }: Props) {
         </h1>
 
         <p className="text-sm text-cyan-300 mt-1">
-          Abu Dhabi 2026
+          Dubai 2027
         </p>
 
       </div>

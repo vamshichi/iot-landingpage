@@ -76,7 +76,7 @@ export function HeroSection() {
             className="mb-6 inline-block"
           >
             <div className="px-4 py-2 rounded-full border border-primary/50 bg-primary/10 backdrop-blur-sm">
-              <span className="text-sm font-medium text-primary">Hosted Alongside IOT Security World Summit Abu Dhabi 2026</span>
+              <span className="text-sm font-medium text-primary">Hosted Alongside IOT Security World Summit Dubai 2027</span>
             </div>
           </motion.div>
 
@@ -89,7 +89,7 @@ export function HeroSection() {
           >
             IOT Security Leadership
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mt-2">
-              Excellence Awards 2026
+              Excellence Awards 2027
             </span>
           </motion.h1>
 
@@ -112,14 +112,14 @@ export function HeroSection() {
           >
             <div className="flex items-center gap-2">
               <CalendarDays className="w-5 h-5 text-primary" />
-              <span className="text-lg font-medium">22nd October 2026</span>
+              <span className="text-lg font-medium">4th February 2027</span>
             </div>
 
             <div className="hidden sm:block w-px h-6 bg-primary/30" />
 
             <div className="flex items-center gap-2">
               <MapPin className="w-5 h-5 text-primary" />
-              <span className="text-lg font-medium">Abu Dhabi</span>
+              <span className="text-lg font-medium">Dubai</span>
             </div>
           </motion.div>
 

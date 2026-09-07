@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
       to: lead.workEmailAddress,
 
-      subject: "Your Event Badge - IoT Security World Summit 2026",
+      subject: "Your Event Badge - IoT Security World Summit 2027",
 
       html: `
         <div style="
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
                 margin: 0;
                 font-size: 28px;
               ">
-                IoT Security World Summit 2026
+                IoT Security World Summit 2027
               </h1>
 
               <p style="
@@ -109,7 +109,7 @@ export async function POST(req: Request) {
                 font-size: 15px;
               ">
                 Your badge for the
-                <strong>IoT Security World Summit 2026</strong>
+                <strong>IoT Security World Summit 2027</strong>
                 has been successfully generated.
               </p>
 
@@ -205,7 +205,7 @@ export async function POST(req: Request) {
                   margin: 8px 0;
                   color: #334155;
                 ">
-                  📅 2026
+                  📅 2027
                 </p>
 
                 <p style="
@@ -235,7 +235,7 @@ export async function POST(req: Request) {
                   color: #9ca3af;
                   font-size: 12px;
                 ">
-                  © 2026 IoT Security World Summit
+                  © 2027 IoT Security World Summit
                 </p>
 
               </div>

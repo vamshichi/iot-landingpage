@@ -100,7 +100,7 @@ export function generateAdminEmailTemplate(data: FormSubmissionData): string {
             ` : ''}
           </div>
           <div class="footer">
-            <p>IoT Security World Summit Abu Dhabi 2026</p>
+            <p>IoT Security World Summit Dubai 2027</p>
             <p>This is an automated email. Please reply directly to the contact provided above.</p>
           </div>
         </div>
@@ -131,11 +131,11 @@ export function generateUserEmailTemplate(data: FormSubmissionData): string {
         <div class="container">
           <div class="header">
             <h1>Thank You for Your Interest</h1>
-            <p>IoT Security World Summit Abu Dhabi 2026</p>
+            <p>IoT Security World Summit Dubai 2027</p>
           </div>
           <div class="content">
             <h2>Dear ${escapeHtml(data.name)},</h2>
-            <p>Thank you for reaching out to the IoT Security World Summit Abu Dhabi 2026. We have received your inquiry and appreciate your interest in our conference.</p>
+            <p>Thank you for reaching out to the IoT Security World Summit Dubai 2027. We have received your inquiry and appreciate your interest in our conference.</p>
             
             <h3>Your Submission Details:</h3>
             <ul>
@@ -160,8 +160,8 @@ export function generateUserEmailTemplate(data: FormSubmissionData): string {
             <p>Best regards,<br/><strong>IoT Security World Summit Team</strong></p>
           </div>
           <div class="footer">
-            <p>IoT Security World Summit Abu Dhabi 2026</p>
-            <p>March 15-17, 2026 | Abu Dhabi International Convention Centre</p>
+            <p>IoT Security World Summit Dubai 2027</p>
+            <p>March 15-17, 2027 | Dubai International Convention Centre</p>
             <p><a href="mailto:info@confexmeet.com" style="color: #00d4ff; text-decoration: none;">info@confexmeet.com</a> | +91 7975 429 127</p>
           </div>
         </div>

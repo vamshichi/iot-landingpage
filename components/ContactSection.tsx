@@ -107,7 +107,7 @@ export function ContactSection() {
     transition={{ delay: 0.3 }}
     viewport={{ once: true }}
   >
-    IoT Security World Summit Abu Dhabi 2026
+    IoT Security World Summit Dubai 2027
   </motion.p>
 
   <motion.p
@@ -117,7 +117,7 @@ export function ContactSection() {
     transition={{ delay: 0.4 }}
     viewport={{ once: true }}
   >
-    24th September 2026 | Abu Dhabi
+    4th February 2027 | Dubai
   </motion.p>
 
   {/* Buttons */}

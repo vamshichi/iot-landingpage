@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export function WhySummitSection() {
   const points = [
-    { icon: Landmark, title: "Abu Dhabi Digital Authority" },
+    { icon: Landmark, title: "Dubai Digital Authority" },
     { icon: ShieldCheck, title: "UAE Cyber Security Council" },
     { icon: LineChart, title: "Benchmark national strategies" },
     { icon: Server, title: "Secure critical infrastructure" },
@@ -51,7 +51,7 @@ export function WhySummitSection() {
           </p>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-cyan-400 font-semibold">
-            <span>Abu Dhabi Digital Authority</span>
+            <span>Dubai Digital Authority</span>
             <span className="hidden md:block">•</span>
             <span>UAE Cyber Security Council</span>
           </div>

@@ -111,7 +111,7 @@ export function NominationFormSection() {
             </div>
             <h2 className="text-4xl font-bold text-white mb-4">Nomination Submitted</h2>
             <p className="text-white/60 text-lg mb-10 leading-relaxed">
-              Thank you for submitting your nomination for the IoT Security Leadership Excellence Awards 2026.
+              Thank you for submitting your nomination for the IoT Security Leadership Excellence Awards 2027.
             </p>
             <button
               onClick={resetForm}

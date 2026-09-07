@@ -22,7 +22,7 @@ export default function AdminNav({
             <span className="font-bold text-white text-sm">Admin Panel</span>
             <span className="hidden sm:inline text-slate-600 text-sm">
               {" "}
-              · IoT Security World Summit 2026
+              · IoT Security World Summit 2027
             </span>
           </div>
         </div>

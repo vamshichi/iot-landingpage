@@ -57,7 +57,7 @@ function clientEmail(name: string, formType: string): string {
             <td style="background:linear-gradient(135deg,#0a2540 0%,#0e3d6e 100%);padding:36px 40px;text-align:center;">
               <p style="margin:0 0 8px;color:#38bdf8;font-size:12px;letter-spacing:3px;
                         text-transform:uppercase;font-weight:600;">IoT Security World Summit</p>
-              <h1 style="margin:0;color:#fff;font-size:26px;font-weight:700;">Abu Dhabi 2026</h1>
+              <h1 style="margin:0;color:#fff;font-size:26px;font-weight:700;">Dubai 2027</h1>
               <div style="margin-top:16px;height:2px;background:linear-gradient(90deg,transparent,#38bdf8,transparent);"></div>
             </td>
           </tr>
@@ -86,8 +86,8 @@ function clientEmail(name: string, formType: string): string {
           </tr>
           <tr>
             <td style="background:#0a2540;padding:24px 40px;text-align:center;">
-              <p style="margin:0 0 4px;color:#94a3b8;font-size:12px;">IoT Security World Summit · Abu Dhabi 2026</p>
-              <p style="margin:0;color:#64748b;font-size:11px;">© 2026 Confex Meet. All rights reserved.</p>
+              <p style="margin:0 0 4px;color:#94a3b8;font-size:12px;">IoT Security World Summit · Dubai 2027</p>
+              <p style="margin:0;color:#64748b;font-size:11px;">© 2027 Confex Meet. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -114,7 +114,7 @@ function adminEmail(formType: string, tableRows: string): string {
           <tr>
             <td style="background:#0a2540;padding:24px 32px;">
               <p style="margin:0 0 4px;color:#38bdf8;font-size:11px;letter-spacing:2px;text-transform:uppercase;">
-                IoT Security World Summit 2026
+                IoT Security World Summit 2027
               </p>
               <h1 style="margin:0;color:#fff;font-size:20px;">${labels[formType] ?? "New Submission"}</h1>
               <p style="margin:6px 0 0;color:#94a3b8;font-size:12px;">
@@ -145,20 +145,20 @@ function adminEmail(formType: string, tableRows: string): string {
 /* ─── Subjects ──────────────────────────────────────────────── */
 const SUBJECT_MAP: Record<string, { client: string; admin: string }> = {
   delegate: {
-    client: "Your Registration is Confirmed – IoT Security World Summit Abu Dhabi 2026",
-    admin: "🔔 New Delegate Registration – IoT Security Summit 2026",
+    client: "Your Registration is Confirmed – IoT Security World Summit Dubai 2027",
+    admin: "🔔 New Delegate Registration – IoT Security Summit 2027",
   },
   sponsor: {
-    client: "Sponsorship Enquiry Received – IoT Security World Summit Abu Dhabi 2026",
-    admin: "🔔 New Sponsorship Enquiry – IoT Security Summit 2026",
+    client: "Sponsorship Enquiry Received – IoT Security World Summit Dubai 2027",
+    admin: "🔔 New Sponsorship Enquiry – IoT Security Summit 2027",
   },
   brochure: {
-    client: "Your Brochure Request – IoT Security World Summit Abu Dhabi 2026",
-    admin: "🔔 New Brochure Request – IoT Security Summit 2026",
+    client: "Your Brochure Request – IoT Security World Summit Dubai 2027",
+    admin: "🔔 New Brochure Request – IoT Security Summit 2027",
   },
   nomination: {
-    client: "Your Nomination is Received – IoT Security Leadership Excellence Awards 2026",
-    admin:  "🏆 New Award Nomination – IoT Security Summit 2026",
+    client: "Your Nomination is Received – IoT Security Leadership Excellence Awards 2027",
+    admin:  "🏆 New Award Nomination – IoT Security Summit 2027",
   },
 };
 

@@ -9,15 +9,15 @@ This guide explains how to customize every aspect of the website for your needs.
 **File: `components/HeroSection.tsx`**
 ```tsx
 // Change headline and dates
-<span className="glow-text-cyan">Summit Abu Dhabi</span>
-<span className="block text-cyan-400 mt-2">2026</span>
+<span className="glow-text-cyan">Summit Dubai</span>
+<span className="block text-cyan-400 mt-2">2027</span>
 
 // Change subheading
 Experience the premier conference connecting global leaders...
 
 // Update registration dates
 <div className="text-2xl md:text-3xl font-bold glow-text-cyan mb-2">
-  March 15-17, 2026  {/* Update dates */}
+  March 15-17, 2027  {/* Update dates */}
 </div>
 ```
 
@@ -27,7 +27,7 @@ Experience the premier conference connecting global leaders...
 const agenda = [
   {
     day: 'Day 1: Future of IoT Security',
-    date: 'March 15, 2026',  // Update date
+    date: 'March 15, 2027',  // Update date
     sessions: [
       {
         time: '09:00 - 10:00',
@@ -122,7 +122,7 @@ const industries = [
 <span>+91 7975 429 127</span>
 
 // Update location
-<span>Abu Dhabi International Convention Centre</span>
+<span>Dubai International Convention Centre</span>
 ```
 
 ## Theme Customization
@@ -410,7 +410,7 @@ export function BlogSection() {
       id: 1,
       title: 'Blog Post Title',
       excerpt: 'Short description...',
-      date: 'March 15, 2026',
+      date: 'March 15, 2027',
       author: 'Author Name',
       url: '/blog/post-1',
     },

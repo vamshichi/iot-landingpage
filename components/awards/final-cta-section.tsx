@@ -70,7 +70,7 @@ export function FinalCTASection() {
             <Sparkles className="w-4 h-4 text-cyan-400" />
 
             <span className="text-cyan-400 text-sm font-medium uppercase tracking-wider">
-              Nominations Open 2026
+              Nominations Open 2027
             </span>
 
           </div>

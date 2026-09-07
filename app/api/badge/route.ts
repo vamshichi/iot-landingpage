@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   const qrPayload = JSON.stringify({
     ticketId,
     leadId: lead.id,
-    event: "IoT Security World Summit 2026",
+    event: "IoT Security World Summit 2027",
   });
 
   const qrCode = await generateQRCode(qrPayload);

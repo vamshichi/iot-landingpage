@@ -1,4 +1,4 @@
-# IoT Security World Summit Abu Dhabi 2026 - Website
+# IoT Security World Summit Dubai 2027 - Website
 
 A premium, modern conference website for the IoT Security World Summit, featuring a dark cybersecurity theme with glassmorphism effects, smooth animations, and comprehensive lead management capabilities.
 
@@ -267,7 +267,7 @@ To contribute improvements:
 
 ## License
 
-© 2026 IoT Security World Summit. All rights reserved.
+© 2027 IoT Security World Summit. All rights reserved.
 
 ## Support
 

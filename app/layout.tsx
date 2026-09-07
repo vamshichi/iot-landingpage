@@ -9,7 +9,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'IoT Security World Summit Abu Dhabi 2026',
+  title: 'IoT Security World Summit Dubai 2027',
   description: 'Join the most important cybersecurity and IoT infrastructure conference in the Middle East. Connect with global leaders, innovative solutions, and the future of secure IoT ecosystems.',
   generator: 'vamshi',
   icons: {
@@ -30,13 +30,13 @@ export const metadata: Metadata = {
     apple: '/iotlogo.png',
   },
   openGraph: {
-    title: 'IoT Security World Summit Abu Dhabi 2026',
+    title: 'IoT Security World Summit Dubai 2027',
     description: 'Premier cybersecurity and IoT infrastructure conference',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'IoT Security World Summit Abu Dhabi 2026',
+    title: 'IoT Security World Summit Dubai 2027',
     description: 'Premier cybersecurity and IoT infrastructure conference',
   },
 }

@@ -8,7 +8,7 @@ export default function PrivacyPolicyPage() {
         </h1>
 
         <p className="text-gray-400 mb-12">
-          Effective Date: May 20, 2026
+          Effective Date: May 20, 2027
         </p>
 
         {/* Section 1 */}

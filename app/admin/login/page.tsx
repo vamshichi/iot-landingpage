@@ -57,7 +57,7 @@ export default function AdminLogin() {
           </div>
           <p className="text-cyan-400 text-xs font-semibold tracking-widest uppercase">IoT Security World Summit</p>
           <h1 className="text-2xl font-bold text-white mt-1">Admin Panel</h1>
-          <p className="text-slate-500 text-sm mt-1">Abu Dhabi 2026 · Confex Meet</p>
+          <p className="text-slate-500 text-sm mt-1">Dubai 2027 · Confex Meet</p>
         </div>
 
         {/* Card */}
@@ -114,7 +114,7 @@ export default function AdminLogin() {
         </div>
 
         <p className="text-center text-slate-600 text-xs mt-6">
-          © 2026 Confex Meet · Restricted Access
+          © 2027 Confex Meet · Restricted Access
         </p>
       </motion.div>
     </div>

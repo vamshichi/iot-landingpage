@@ -2,7 +2,7 @@
 
 ## 🎯 Project Completion Status: ✅ 100%
 
-All components, features, and documentation have been successfully created for the premium IoT Security World Summit Abu Dhabi 2026 conference website.
+All components, features, and documentation have been successfully created for the premium IoT Security World Summit Dubai 2027 conference website.
 
 ---
 
@@ -308,7 +308,7 @@ The project includes:
 
 ## 📄 License
 
-© 2026 IoT Security World Summit. All rights reserved.
+© 2027 IoT Security World Summit. All rights reserved.
 
 ---
 

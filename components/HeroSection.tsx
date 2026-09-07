@@ -13,7 +13,7 @@ export default function HeroSection() {
     seconds: 0,
   });
 
-  const EVENT_DATE = new Date("2026-10-22T09:00:00+04:00").getTime();
+  const EVENT_DATE = new Date("2027-10-22T09:00:00+04:00").getTime();
 useEffect(() => {
   const updateCountdown = () => {
     const now = Date.now();
@@ -89,7 +89,7 @@ useEffect(() => {
             </span>
             <br />
             <span className="text-cyan-400">
-              Abu Dhabi 2026
+              Dubai 2027
             </span>
           </motion.h1>
 
@@ -101,7 +101,7 @@ useEffect(() => {
               visible: { opacity: 1, y: 0 },
             }}
           >
-            22nd October 2026 | Abu Dhabi
+            4th February 2027 | Dubai
           </motion.p>
 
           {/* TAGLINE */}

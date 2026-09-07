@@ -232,7 +232,7 @@ function SuccessBanner() {
       <CheckCircle2 size={56} className="text-cyan-400" />
       <h3 className="text-xl font-bold text-white">Submission Received!</h3>
       <p className="text-slate-400 max-w-sm text-sm leading-relaxed">
-        Thank you for your interest in IoT Security World Summit Abu Dhabi 2026.
+        Thank you for your interest in IoT Security World Summit Dubai 2027.
         We've sent a confirmation to your email and will get back to you soon.
       </p>
     </motion.div>
@@ -672,7 +672,7 @@ function BrochureForm() {
 const MODAL_META: Record<ModalKey, { title: string; subtitle: string; form: React.ReactNode }> = {
   delegate: {
     title: "Delegate Registration",
-    subtitle: "Secure your seat at IoT Security World Summit Abu Dhabi 2026",
+    subtitle: "Secure your seat at IoT Security World Summit Dubai 2027",
     form: <DelegateForm />,
   },
   sponsor: {
@@ -726,7 +726,7 @@ function Modal({ modalKey, onClose }: { modalKey: ModalKey; onClose: () => void 
         <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-cyan-500/20 shrink-0">
           <div>
             <p className="text-cyan-400 text-xs font-semibold tracking-widest uppercase mb-1">
-              IoT Security World Summit · Abu Dhabi 2026
+              IoT Security World Summit · Dubai 2027
             </p>
             <h2 className="text-xl font-bold text-white">{meta.title}</h2>
             <p className="text-sm text-slate-400 mt-0.5">{meta.subtitle}</p>
