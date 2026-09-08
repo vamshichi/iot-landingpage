@@ -13,7 +13,7 @@ export default function HeroSection() {
     seconds: 0,
   });
 
-  const EVENT_DATE = new Date("2027-10-22T09:00:00+04:00").getTime();
+ const EVENT_DATE = new Date("2027-02-04T09:00:00+04:00").getTime();
 useEffect(() => {
   const updateCountdown = () => {
     const now = Date.now();
