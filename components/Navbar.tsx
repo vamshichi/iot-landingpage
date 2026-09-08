@@ -43,7 +43,7 @@ export function Navbar() {
           {/* Logo */}
           <Link href="#" className="flex items-center">
             <Image
-              src={isScrolled ? "/iotlogo.png" : "/whitelogo.png"}
+              src={isScrolled ? "/iotlogo1.png" : "/whitelogo1.png"}
               alt="IoT Summit Logo"
               width={140}
               height={40}
